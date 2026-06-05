@@ -13,8 +13,10 @@
 把 3 章以上的小说自动转成一份**可编辑、可继续打磨**的结构化剧本初稿。核心不是"给人看的剧本文本"，而是"一份人能改、机器也能用的结构化剧本数据"。
 
 - **结构化 YAML 作为中间表示（IR）** —— 内容与格式分离，一份数据多格式渲染。
+- **四个正交维度** —— ① 制式（中式/好莱坞，渲染）· ② 体量 · ④ 改编自由度（转换前烤进数据）· ③ 输出格式（导出）；别混成一个"格式"。
 - **跨章节一致性** —— 分章处理 + 章节间传递 running state（角色 + 剧情摘要）。
 - **Story Bible 双向** —— 世界观 / 人设 / 大纲可由作者输入，也可由 AI 反推、交作者确认。
+- **本地持久化 + 多作品 + 版本管理** —— 纯客户端 IndexedDB，无登录即可留存、管理多部、整本快照回滚。
 
 详见 `docs/`（本地，暂未纳入版本控制）中的产品文档、技术设计文档、Schema 设计文档。
 
@@ -27,6 +29,7 @@
 | 框架 | Next.js 14（App Router）+ TypeScript |
 | UI | Tailwind CSS + shadcn/ui |
 | 状态 | Zustand + TanStack Query |
+| 持久化 | 纯客户端 IndexedDB（idb-keyval）· 单用户、无 auth、多作品库 |
 | LLM 编排 | 手写 TS prompt chain + Vercel AI SDK（流式） |
 | Schema 真源 | Zod → `js-yaml` 序列化成 YAML |
 | YAML 编辑器 | CodeMirror 6 |
