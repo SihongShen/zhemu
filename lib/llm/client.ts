@@ -25,6 +25,21 @@ function getClient(): OpenAI {
 }
 
 const DEFAULT_MODEL = process.env.LLM_MODEL ?? 'deepseek-chat'
+
+/** dev 下打印 DeepSeek 的缓存命中情况，便于排查 cache miss。 */
+function logCache(label: string, usage: unknown): void {
+  if (process.env.NODE_ENV === 'production' || !usage) return
+  const u = usage as {
+    prompt_tokens?: number
+    prompt_cache_hit_tokens?: number
+    prompt_cache_miss_tokens?: number
+  }
+  const hit = u.prompt_cache_hit_tokens ?? 0
+  const prompt = u.prompt_tokens ?? 0
+  const miss = u.prompt_cache_miss_tokens ?? Math.max(0, prompt - hit)
+  const rate = hit + miss ? Math.round((hit / (hit + miss)) * 100) : 0
+  console.log(`[llm:${label}] prompt=${prompt} cache hit/miss=${hit}/${miss} (${rate}% hit)`)
+}
 // 默认强制非思考：抽取/转换是结构化活，不需要思维链。
 // 关了 temperature 才生效、强制 tool_choice 才稳，也避开思考模式 reasoning_content 的多轮回传。
 // 想开思考：设 LLM_THINKING=enabled。
@@ -76,6 +91,7 @@ export async function callStructured(args: StructuredCall): Promise<string> {
   if (THINKING_ENABLED) body.reasoning_effort = 'high'
 
   const res = await getClient().chat.completions.create(body)
+  logCache(args.toolName, res.usage)
 
   const call = res.choices[0]?.message?.tool_calls?.[0]
   if (!call || call.type !== 'function') {
@@ -83,4 +99,31 @@ export async function callStructured(args: StructuredCall): Promise<string> {
     throw new Error('模型未返回 function tool_call；检查 provider 是否支持 function calling / 具名 tool_choice')
   }
   return call.function.arguments // 原始 JSON 字符串，由调用方在 repair.parse 里解析+校验
+}
+
+/** 调一次模型，返回纯文本（无结构化约束）。给滚动摘要等自由文本场景用。 */
+export async function callText(args: {
+  system: string
+  user: string
+  model?: string
+  maxTokens?: number
+}): Promise<string> {
+  const body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming & {
+    thinking?: { type: 'enabled' | 'disabled' }
+    reasoning_effort?: 'high' | 'max'
+  } = {
+    model: args.model ?? DEFAULT_MODEL,
+    temperature: 0.3,
+    max_tokens: args.maxTokens ?? 2000,
+    messages: [
+      { role: 'system', content: args.system },
+      { role: 'user', content: args.user },
+    ],
+    thinking: { type: THINKING_ENABLED ? 'enabled' : 'disabled' },
+  }
+  if (THINKING_ENABLED) body.reasoning_effort = 'high'
+
+  const res = await getClient().chat.completions.create(body)
+  logCache('text', res.usage)
+  return res.choices[0]?.message?.content ?? ''
 }

@@ -1,17 +1,81 @@
 /**
- * 单章转场景(workflow step · 核心)。注入封闭角色清单,禁止就地造 id。
- * bible 以服务端/会话态为准,按 projectId 取,不接客户端传入。
+ * 单章转场景（workflow step · 核心）。注入封闭角色清单，禁止就地造 id。
+ * 按 ② lengthForm 调颗粒度、按 ④ adaptationMode 调忠实度。
+ * id（unit/scene）转换后确定性赋值，不依赖模型，避免跨章撞 id。
  *
- * @see docs/DEVELOPMENT_PLAN.md · Day 2
+ * @see docs/DAY2_PLAN.md · §2
  */
-import type { Bible, Unit } from '@/lib/schema'
+import { Unit } from '@/lib/schema'
+import type { Bible } from '@/lib/schema'
+import type { WorkSettings } from '@/lib/store/project-store'
 import type { Chapter } from '@/lib/pipeline/segment'
+import { callStructured } from '@/lib/llm/client'
+import { withRepair } from '@/lib/llm/repair'
+import { assembleWorldInfo } from '@/lib/pipeline/world-info'
+import { convertChapterSystem, convertChapterUser } from '@/lib/llm/prompts'
 
-export async function convertChapter(_args: {
+export async function convertChapter(args: {
   chapter: Chapter
   bible: Bible
   runningSummary: string
+  settings: WorkSettings
 }): Promise<Unit> {
-  // TODO(Day2): worldInfo + prompt → withRepair → Unit
-  throw new Error('convertChapter: not implemented')
+  const wi = assembleWorldInfo(args.bible, args.chapter.text)
+
+  const unit = await withRepair<Unit, string>({
+    generate: (feedback) =>
+      callStructured({
+        system: convertChapterSystem,
+        user:
+          convertChapterUser({
+            chapterIndex: args.chapter.index,
+            constantBlock: wi.constantBlock,
+            selectiveBlock: wi.selectiveBlock,
+            rosterText: wi.rosterText,
+            runningSummary: args.runningSummary,
+            settings: args.settings,
+            chapterText: args.chapter.text,
+          }) + (feedback ? `\n\n# 上次输出校验失败，请按以下问题修正：\n${feedback}` : ''),
+        toolName: 'emit_unit',
+        toolDescription: '输出本章的结构化剧本单元（场景数组）',
+        schema: Unit,
+      }),
+    parse: (raw) => {
+      let obj: unknown
+      try {
+        obj = JSON.parse(raw)
+      } catch {
+        return { ok: false, error: '输出不是合法 JSON。请只通过 emit_unit 工具输出。' }
+      }
+      // unit/scene 的 id 下游会被确定性覆盖（unit_chN / sc_N_xx）；
+      // 这里给缺失/空的 id 补占位，避免模型漏填 id 触发无谓 repair。
+      if (obj && typeof obj === 'object') {
+        const u = obj as { id?: unknown; scenes?: unknown }
+        if (typeof u.id !== 'string' || !u.id.trim()) u.id = 'tmp_unit'
+        if (Array.isArray(u.scenes)) {
+          u.scenes.forEach((s, i) => {
+            if (s && typeof s === 'object') {
+              const sc = s as { id?: unknown }
+              if (typeof sc.id !== 'string' || !sc.id.trim()) sc.id = `tmp_sc_${i + 1}`
+            }
+          })
+        }
+      }
+      const r = Unit.safeParse(obj)
+      return r.success
+        ? { ok: true, value: r.data }
+        : { ok: false, error: 'Unit schema 校验失败，issues:\n' + JSON.stringify(r.error.issues, null, 2) }
+    },
+  })
+
+  // 确定性赋 id / 溯源：保证跨章唯一，不依赖模型
+  unit.id = `unit_ch${args.chapter.index}`
+  unit.source_chapter = args.chapter.index
+  // 始终用分章得到的章节标题，保证 5 章标题格式统一（不放任模型各写各的）
+  if (args.chapter.title) unit.title = args.chapter.title
+  unit.scenes.forEach((s, i) => {
+    s.id = `sc_${args.chapter.index}_${String(i + 1).padStart(2, '0')}`
+  })
+
+  return unit
 }

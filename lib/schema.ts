@@ -83,6 +83,7 @@ export const CharacterEntry = z.object({
   keywords: z.array(z.string()).default([]), // **选择性注入触发词**：本章命中其一才把该角色注入 prompt（名字/别称/标志物）
   injection: Injection.default('selective'), // 注入策略（见 Injection 枚举）；主角通常设 constant
 })
+export type CharacterEntry = z.infer<typeof CharacterEntry>
 
 /** 大纲节点（beat）。一个关键剧情节点，用于把控全局结构与跨章节奏。 */
 export const Beat = z.object({
@@ -207,6 +208,7 @@ export const Meta = z.object({
     })
     .optional(),
 })
+export type Meta = z.infer<typeof Meta>
 
 /**
  * 根：一份完整剧本 = 元信息 + Bible + 逐章单元。
