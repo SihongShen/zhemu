@@ -1,0 +1,205 @@
+{
+  "ok": true,
+  "passed": 3,
+  "total": 3,
+  "results": [
+    {
+      "name": "novel-only",
+      "desc": "只有小说原文（有章节）→ 纯反推",
+      "ok": true,
+      "checks": {
+        "chapterCount": 3,
+        "characterCount": 4,
+        "idsUnique": true,
+        "idsPrefixed": true,
+        "worldSummaryNonEmpty": true,
+        "outlineCount": 3
+      },
+      "bible": {
+        "world": {
+          "summary": "一座潮湿、灰暗的现代沿海城市，故事围绕城郊旧书店、废弃灯塔等地点展开。整体基调沉静、悬疑、带淡淡哀伤，以一本绝版旧书《潮汐手记》为线索，串联起失踪、守护与亲情的秘密。",
+          "time_period": "当代",
+          "locations": ["城郊旧书店", "城东废弃灯塔", "公交"],
+          "rules": [],
+          "tone": "沉静、悬疑、忧伤中带温情"
+        },
+        "characters": [
+          {
+            "id": "char_linxia",
+            "name": "林夏",
+            "aliases": ["夏夏"],
+            "role": "protagonist",
+            "description": "旧书店店员，父亲三年前失踪。敏感、执着，在雨夜遇到顾明后开始追寻父亲失踪的真相。",
+            "keywords": ["林夏", "夏夏", "旧书店", "店员"],
+            "injection": "constant"
+          },
+          {
+            "id": "char_guming",
+            "name": "顾明",
+            "aliases": [],
+            "role": "supporting",
+            "description": "穿灰风衣的神秘男子，受林夏父亲托付，在适当时机将《潮汐手记》交还给林夏。眼神似乎早就认识林夏。",
+            "keywords": ["顾明", "灰风衣", "潮汐手记"],
+            "injection": "selective"
+          },
+          {
+            "id": "char_laozhou",
+            "name": "老周",
+            "aliases": ["独臂老人"],
+            "role": "supporting",
+            "description": "废弃灯塔管理员，独臂，年轻时与林夏父亲相识。对《潮汐手记》讳莫如深，试图劝退林夏。",
+            "keywords": ["老周", "独臂老人", "灯塔管理员", "灯塔"],
+            "injection": "selective"
+          },
+          {
+            "id": "char_fuqin",
+            "name": "林夏父亲",
+            "aliases": ["父亲"],
+            "role": "supporting",
+            "description": "三年前失踪，手中曾攥着《潮汐手记》。为保护书中的秘密自愿消失，将女儿托付给顾明。",
+            "keywords": ["父亲", "林夏父亲", "失踪", "潮汐手记"],
+            "injection": "selective"
+          }
+        ],
+        "outline": [
+          {
+            "id": "beat_1",
+            "title": "雨夜来客",
+            "summary": "雨夜，林夏在旧书店值最后一班夜。打烊前顾明闯入，要找绝版书《潮汐手记》——正是林夏父亲失踪时手中所攥的书。顾明的眼神让林夏觉得他早就认识自己。"
+          },
+          {
+            "id": "beat_2",
+            "title": "追寻线索",
+            "summary": "顾明留下地址消失在雨中。林夏彻夜未眠，次日循地址找到城东废弃灯塔，遇到独臂管理员老周。老周听到《潮汐手记》脸色大变，拒绝透露任何信息。林夏回家后发现风衣口袋里多了半张旧照片：父亲与年轻时的老周并肩站在灯塔下。"
+          },
+          {
+            "id": "beat_3",
+            "title": "灯塔亮起",
+            "summary": "当晚，熄灭多年的灯塔忽然亮起。林夏赶到塔顶，顾明已等在那里，手中正是《潮汐手记》。顾明告知真相：父亲为保护书中秘密自愿消失，而顾明是受托之人。林夏接过书，扉页上父亲的字让她终于落泪。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "with-bible-doc",
+      "desc": "小说 + 完整世界观/人设设定文档 → grounding",
+      "ok": true,
+      "checks": {
+        "chapterCount": 1,
+        "characterCount": 2,
+        "idsUnique": true,
+        "idsPrefixed": true,
+        "worldSummaryNonEmpty": true,
+        "outlineCount": 2,
+        "characterCoverage": "2/2（命中：基拉、诺亚）"
+      },
+      "bible": {
+        "world": {
+          "summary": "2098年，海平面上升淹没大半陆地，幸存者迁入悬浮城邦「方舟」。记忆可被提取、封装成「忆晶」交易，忆晶猎人受雇追回或盗取特定记忆。基调冷峻、赛博朋克。",
+          "time_period": "2098年",
+          "locations": ["方舟城", "第七环", "忆晶黑市"],
+          "rules": [
+            "记忆可被提取、封装成「忆晶」进行交易",
+            "方舟城分环而治，第七环常年人造雨以洗去空气中的盐分"
+          ],
+          "tone": "冷峻、赛博朋克"
+        },
+        "characters": [
+          {
+            "id": "char_jila",
+            "name": "基拉",
+            "aliases": ["Kira"],
+            "role": "protagonist",
+            "description": "女，忆晶猎人，沉默寡言。三年前因一枚「淹没前的记忆」忆晶丢失了自己的一段记忆，对此事耿耿于怀。",
+            "keywords": ["基拉", "Kira", "忆晶猎人", "兜帽", "沉默寡言"],
+            "injection": "constant"
+          },
+          {
+            "id": "char_nuoya",
+            "name": "诺亚",
+            "aliases": ["Noah"],
+            "role": "supporting",
+            "description": "男，方舟黑市的记忆商人，基拉的旧识。消息灵通但行事谨慎，对忆晶来源讳莫如深。",
+            "keywords": ["诺亚", "Noah", "记忆商人", "黑市", "柜台"],
+            "injection": "selective"
+          }
+        ],
+        "outline": [
+          {
+            "id": "beat_01",
+            "title": "黑市重逢",
+            "summary": "方舟第七环人造雨中，基拉来到忆晶黑市。记忆商人诺亚认出了她，推出一枚泛蓝的「淹没前的海」忆晶，暗示价格不菲。",
+            "structure_tag": "opening",
+            "chapter_range": [1, 1]
+          },
+          {
+            "id": "beat_02",
+            "title": "拒绝与追问",
+            "summary": "基拉没有接这枚忆晶——三年前正是这类「淹没前的记忆」让她丢失了自己的一段。她转而追问卖家身份，诺亚笑而不答。远处巡逻无人机嗡鸣逼近。",
+            "structure_tag": "turning_point",
+            "chapter_range": [1, 1]
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-chapter",
+      "desc": "无章节标记的短篇 → 测 segment 长度切分",
+      "ok": true,
+      "checks": {
+        "chapterCount": 1,
+        "characterCount": 2,
+        "idsUnique": true,
+        "idsPrefixed": true,
+        "worldSummaryNonEmpty": true,
+        "outlineCount": 3
+      },
+      "bible": {
+        "world": {
+          "summary": "一个写实的现代都市夜晚世界，故事主要发生在一家凌晨营业的便利店里。整体基调安静、克制、略带忧伤，聚焦于都市夜归人的孤独与微妙的日常仪式。",
+          "time_period": "现代",
+          "locations": ["便利店（凌晨营业）"],
+          "rules": [],
+          "tone": "安静、克制、略带忧伤的都市夜话"
+        },
+        "characters": [
+          {
+            "id": "char_amay",
+            "name": "阿May",
+            "aliases": [],
+            "role": "protagonist",
+            "description": "便利店夜班店员，细心、温和，会主动关心熟客，注意到老陈每次少一枚硬币的细节。",
+            "keywords": ["阿May", "May", "店员", "关东煮"],
+            "injection": "constant"
+          },
+          {
+            "id": "char_laochen",
+            "name": "老陈",
+            "aliases": [],
+            "role": "supporting",
+            "description": "凌晨三点准时来便利店买关东煮的失眠老人，沉默寡言，每次用硬币一枚枚码在台面上付款，硬币数逐次递减。",
+            "keywords": ["老陈", "失眠", "硬币", "关东煮"],
+            "injection": "selective"
+          }
+        ],
+        "outline": [
+          {
+            "id": "beat_1",
+            "title": "凌晨三点的便利店",
+            "summary": "阿May在凌晨三点值班，把关东煮的汤舀给准时出现的老陈，两人之间是熟悉的沉默。"
+          },
+          {
+            "id": "beat_2",
+            "title": "硬币的仪式",
+            "summary": "老陈不回答阿May的寒暄，只把硬币一枚枚码在台面上。阿May忽然意识到，他每次来的硬币数都比上次少一枚。"
+          },
+          {
+            "id": "beat_3",
+            "title": "无声的倒数",
+            "summary": "阿May领悟到这个递减的规律——当硬币码完的那天，老陈大概就不会再来了。一种无言的告别正在悄然进行。"
+          }
+        ]
+      }
+    }
+  ]
+}
