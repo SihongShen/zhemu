@@ -35,9 +35,10 @@ function logCache(label: string, usage: unknown): void {
     prompt_cache_miss_tokens?: number
   }
   const hit = u.prompt_cache_hit_tokens ?? 0
-  const miss = u.prompt_cache_miss_tokens ?? u.prompt_tokens ?? 0
+  const prompt = u.prompt_tokens ?? 0
+  const miss = u.prompt_cache_miss_tokens ?? Math.max(0, prompt - hit)
   const rate = hit + miss ? Math.round((hit / (hit + miss)) * 100) : 0
-  console.log(`[llm:${label}] prompt=${u.prompt_tokens} cache hit/miss=${hit}/${miss} (${rate}% hit)`)
+  console.log(`[llm:${label}] prompt=${prompt} cache hit/miss=${hit}/${miss} (${rate}% hit)`)
 }
 // 默认强制非思考：抽取/转换是结构化活，不需要思维链。
 // 关了 temperature 才生效、强制 tool_choice 才稳，也避开思考模式 reasoning_content 的多轮回传。
