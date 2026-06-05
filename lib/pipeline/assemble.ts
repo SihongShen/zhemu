@@ -21,20 +21,25 @@ export function assemble(args: { bible: Bible; units: Unit[]; meta: Meta }): {
   const report: RefReport = { backfilled: [], flaggedScenes: [] }
   let unknownSeq = 0
 
-  // 把一个引用解析成合法 id；未知则回填一个 stub 角色（同名复用）
-  const resolve = (ref: string, sceneId: string): string => {
-    if (known.has(ref)) return ref
+  // 把一个引用解析成合法 id。返回 isBackfill 标记，让纯空白归一化不被误标 needs_review。
+  const resolve = (rawRef: string, sceneId: string): { id: string; isBackfill: boolean } => {
+    const ref = rawRef.trim() // LLM 可能带前后空白，先规范化
+    if (known.has(ref)) return { id: ref, isBackfill: false }
     const name = ref.startsWith('__new__:')
       ? ref.slice('__new__:'.length).trim() || '未命名角色'
       : ref
     const reused = characters.find((c) => c.id.startsWith('char_unknown') && c.name === name)
-    if (reused) return reused.id
-    unknownSeq += 1
-    const id = `char_unknown${unknownSeq}`
+    if (reused) return { id: reused.id, isBackfill: true }
+    // 生成唯一 id（循环避让，防止与 bible 已有 id 撞）
+    let id: string
+    do {
+      unknownSeq += 1
+      id = `char_unknown${unknownSeq}`
+    } while (known.has(id))
     characters.push({ id, name, aliases: [], keywords: name ? [name] : [], injection: 'selective' })
     known.add(id)
     report.backfilled.push(`${id}（${name}）@ ${sceneId}`)
-    return id
+    return { id, isBackfill: true }
   }
 
   const units: Unit[] = structuredClone(args.units)
@@ -42,17 +47,15 @@ export function assemble(args: { bible: Bible; units: Unit[]; meta: Meta }): {
     for (const scene of unit.scenes) {
       let flagged = false
       scene.characters_present = scene.characters_present.map((ref) => {
-        const id = resolve(ref, scene.id)
-        if (id !== ref) flagged = true
-        return id
+        const { id, isBackfill } = resolve(ref, scene.id)
+        if (isBackfill) flagged = true
+        return id // 始终写回归一化后的 id（去空白）
       })
       for (const el of scene.elements) {
         if (el.type === 'dialogue') {
-          const id = resolve(el.character, scene.id)
-          if (id !== el.character) {
-            el.character = id
-            flagged = true
-          }
+          const { id, isBackfill } = resolve(el.character, scene.id)
+          el.character = id // 始终归一化
+          if (isBackfill) flagged = true
         }
       }
       if (flagged) {
