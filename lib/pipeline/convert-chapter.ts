@@ -47,6 +47,20 @@ export async function convertChapter(args: {
       } catch {
         return { ok: false, error: '输出不是合法 JSON。请只通过 emit_unit 工具输出。' }
       }
+      // unit/scene 的 id 下游会被确定性覆盖（unit_chN / sc_N_xx）；
+      // 这里给缺失/空的 id 补占位，避免模型漏填 id 触发无谓 repair。
+      if (obj && typeof obj === 'object') {
+        const u = obj as { id?: unknown; scenes?: unknown }
+        if (typeof u.id !== 'string' || !u.id.trim()) u.id = 'tmp_unit'
+        if (Array.isArray(u.scenes)) {
+          u.scenes.forEach((s, i) => {
+            if (s && typeof s === 'object') {
+              const sc = s as { id?: unknown }
+              if (typeof sc.id !== 'string' || !sc.id.trim()) sc.id = `tmp_sc_${i + 1}`
+            }
+          })
+        }
+      }
       const r = Unit.safeParse(obj)
       return r.success
         ? { ok: true, value: r.data }
