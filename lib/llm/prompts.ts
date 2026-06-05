@@ -28,7 +28,7 @@ export const extractBibleSystem = `你在为「把小说改编成剧本」做前
 4. 主角 role=protagonist，可设 injection=constant（常驻注入）；
    其余角色 injection=selective，keywords 填能触发其出场的词（名字/别称/标志物/口头禅）。
 5. outline 每个 beat 的 title 必填，summary 简述这段发生了什么。
-6. 全部用中文。`
+6. 除 id 字段（拼音 slug，如 char_linxia）外，其余内容一律用中文。`
 
 /** 抽 bible 的 user：小说正文 +（可选）作者设定文档。 */
 export const extractBibleUser = (novel: string, bibleDoc?: string): string =>

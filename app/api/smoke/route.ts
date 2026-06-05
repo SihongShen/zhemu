@@ -1,10 +1,14 @@
 /**
  * 抽取的冒烟 / 演示端点：浏览器直接看「小说(+可选设定文档) → 合法 Bible」的效果。
- * 内置三个案例，逐个自检并返回 bible，供验证与演示（未配 LLM_API_KEY 时返回 500，无副作用）。
+ * 内置三个案例，逐个自检并返回 bible。
  *
- * 跑法：`npm run dev` →
- *   - 全部案例： http://localhost:3000/api/smoke
- *   - 单个案例： http://localhost:3000/api/smoke?case=with-bible-doc   （省时省钱）
+ * - **本地 dev**：实时调用 LLM 真抽取（未配 LLM_API_KEY 返回 500，无副作用）。
+ * - **线上 production**：返回预生成的静态结果（sample-result.json），**不触发付费 LLM**，
+ *   避免这个无鉴权公开端点被反复请求刷爆额度。
+ *
+ * 跑法：
+ *   - 全部案例： /api/smoke
+ *   - 单个案例： /api/smoke?case=with-bible-doc   （省时省钱）
  *
  * @see docs/DAY1_PLAN.md · §3
  */
@@ -12,6 +16,7 @@ import { NextResponse } from 'next/server'
 import { Bible } from '@/lib/schema'
 import { extractBible } from '@/lib/pipeline/extract-bible'
 import { segment } from '@/lib/pipeline/segment'
+import sampleResult from './sample-result.json'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -120,6 +125,25 @@ async function runCase(c: SmokeCase) {
 }
 
 export async function GET(req: Request) {
+  const only = new URL(req.url).searchParams.get('case')
+
+  // 生产环境：返回预生成的静态结果，**不触发付费 LLM 调用**。
+  // 这是个无鉴权公开端点，线上实时跑会被反复请求刷爆额度；本地 dev 才实时抽取。
+  if (process.env.NODE_ENV === 'production') {
+    const results = only
+      ? sampleResult.results.filter((r) => r.name === only)
+      : sampleResult.results
+    return NextResponse.json({
+      mode: 'static',
+      note: '线上为预生成示例（不实时调用 LLM）；本地 `npm run dev` 为实时抽取。',
+      ok: results.every((r) => r.ok),
+      passed: results.filter((r) => r.ok).length,
+      total: results.length,
+      results,
+    })
+  }
+
+  // —— 以下为开发环境实时抽取 ——
   if (!process.env.LLM_API_KEY) {
     return NextResponse.json(
       { ok: false, error: '未配置 LLM_API_KEY，请在 .env.local 填好后重启 dev' },
@@ -127,7 +151,6 @@ export async function GET(req: Request) {
     )
   }
 
-  const only = new URL(req.url).searchParams.get('case')
   const selected = only ? CASES.filter((c) => c.name === only) : CASES
   if (only && selected.length === 0) {
     return NextResponse.json(

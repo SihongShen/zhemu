@@ -63,7 +63,7 @@ export const SceneMode = z.enum([
 
 /** 世界观设定。world.summary 常驻注入到每章转换 prompt，保证基调/规则不跨章丢失。 */
 export const WorldSetting = z.object({
-  summary: z.string(), //                    一两句话概括世界观/基调，**常驻注入**（每章都进 prompt）
+  summary: z.string().trim().min(1), //      一两句话概括世界观/基调，**常驻注入**（每章都进 prompt）；非空是硬约束，空则触发 repair
   time_period: z.string().optional(), //     时代/年代（如"民国"、"近未来 2090"），影响场景与道具
   locations: z.array(z.string()).default([]), // 主要地点清单，供场景标题 location 参考
   rules: z.array(z.string()).default([]), //     世界规则/设定约束（如"魔法需消耗寿命"），防止改编跑飞
@@ -94,11 +94,27 @@ export const Beat = z.object({
 })
 
 /** Bible 根：Day 1 的产出目标。AI 读完小说反推出这一坨，交作者确认后供 Day 2 转换使用。 */
-export const Bible = z.object({
-  world: WorldSetting, //                    世界观（必填）
-  characters: z.array(CharacterEntry), //    角色表（必填，id 是后续引用的权威源）
-  outline: z.array(Beat).default([]), //     大纲（可空，但建议给几个 beat）
-})
+export const Bible = z
+  .object({
+    world: WorldSetting, //                  世界观（必填）
+    characters: z.array(CharacterEntry), //  角色表（必填，id 是后续引用的权威源）
+    outline: z.array(Beat).default([]), //   大纲（可空，但建议给几个 beat）
+  })
+  // 角色 id「全篇唯一」是核心不变量（id 是引用权威源）：收进 schema，
+  // 让 withRepair 能在出现重复 id 时直接触发修复，而不是放进下游再炸。
+  .superRefine((bible, ctx) => {
+    const seen = new Set<string>()
+    bible.characters.forEach((c, i) => {
+      if (seen.has(c.id)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['characters', i, 'id'],
+          message: `角色 id 重复：${c.id}（每个角色必须唯一，同一人不同称呼请放进 aliases）`,
+        })
+      }
+      seen.add(c.id)
+    })
+  })
 export type Bible = z.infer<typeof Bible>
 
 // ---- 场景元素（discriminated union）----

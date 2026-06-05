@@ -14,8 +14,10 @@ import { z } from 'zod'
 let _client: OpenAI | null = null
 function getClient(): OpenAI {
   if (!_client) {
+    const apiKey = process.env.LLM_API_KEY
+    if (!apiKey) throw new Error('缺少环境变量 LLM_API_KEY（仅服务端使用，勿加 NEXT_PUBLIC_ 前缀）')
     _client = new OpenAI({
-      apiKey: process.env.LLM_API_KEY,
+      apiKey,
       baseURL: process.env.LLM_BASE_URL ?? 'https://api.deepseek.com',
     })
   }

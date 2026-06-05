@@ -27,5 +27,7 @@ export async function withRepair<T, R = unknown>(opts: RepairOptions<T, R>): Pro
     feedback = result.error // 回灌给下一次生成
   }
 
-  throw new Error(`withRepair: 超出 ${max} 次修复仍未通过校验。最后错误：${lastError}`)
+  throw new Error(
+    `withRepair: ${max} 次额外修复（共尝试 ${max + 1} 次）仍未通过校验。最后错误：${lastError}`,
+  )
 }
