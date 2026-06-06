@@ -281,7 +281,7 @@ export default function Landing() {
             把第一篇小说丢进来，几分钟后拿走一份能改、能续、能多格式导出的结构化剧本。
           </p>
           <Link
-            href="/app"
+            href="/works"
             className="group mt-9 inline-flex items-center gap-3 border-2 border-foreground bg-primary px-10 py-4 text-lg font-black text-primary-foreground shadow-brutal-lg transition-transform duration-200 hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0"
           >
             进入折幕
