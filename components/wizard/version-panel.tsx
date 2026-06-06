@@ -1,12 +1,12 @@
 'use client'
 /**
- * VersionPanel（前端）：版本管理侧栏（作用于当前作品）。
- * 列出快照（label + 红/绿校验点），点击回滚；手动「存为快照」。
- * 线性快照，不做版本树/diff（留 v1）。
+ * 版本面板（作用于当前作品）：存为版本 / 点击回滚。线性快照，回滚前自动存防丢。
  *
- * @see docs/DEVELOPMENT_PLAN.md · 版本管理（最小落地）
+ * @see docs/DAY3_PLAN.md · §2.D
  */
 import { useLibraryStore, useActiveWork } from '@/lib/store/project-store'
+
+const ORIGIN_CN: Record<string, string> = { convert: '生成', edit: '手动', regen: '重生' }
 
 export function VersionPanel() {
   const work = useActiveWork()
@@ -14,29 +14,42 @@ export function VersionPanel() {
   const snapshot = useLibraryStore((s) => s.snapshot)
   if (!work) return null
 
+  const list = work.snapshots.slice().reverse()
+
   return (
-    <aside className="w-56 shrink-0" data-panel="versions">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold">版本</h3>
+    <aside className="w-full shrink-0 border-2 border-foreground bg-card p-3 shadow-brutal xl:w-60">
+      <div className="mb-3 flex items-center justify-between">
+        <span className="border-2 border-foreground bg-background px-2.5 py-1 text-xs font-bold uppercase tracking-[0.16em]">
+          版本
+        </span>
         <button
-          className="text-sm"
-          onClick={() => snapshot({ label: '手动保存', origin: 'edit', valid: false })}
+          onClick={() => snapshot({ label: '手动保存', origin: 'edit', valid: true })}
+          className="border-2 border-foreground bg-background px-2 py-1 text-xs font-bold transition-colors hover:bg-accent"
         >
-          存为快照
+          存为版本
         </button>
       </div>
-      <ul className="mt-2 space-y-1">
-        {work.snapshots
-          .slice()
-          .reverse()
-          .map((s) => (
+      {list.length === 0 ? (
+        <p className="text-xs text-muted-foreground">还没有版本。转换完成会自动存一个，编辑后可手动存。</p>
+      ) : (
+        <ul className="space-y-1.5">
+          {list.map((s) => (
             <li key={s.id}>
-              <button className="text-left text-sm" onClick={() => rollback(s.id)}>
-                <span data-valid={s.valid}>{s.valid ? '🟢' : '🔴'}</span> {s.label}
+              <button
+                onClick={() => rollback(s.id)}
+                title="回滚到此版本（回滚前会自动存当前态）"
+                className="flex w-full items-center gap-2 border-2 border-transparent px-2 py-1.5 text-left text-sm font-medium transition-colors hover:border-foreground hover:bg-accent"
+              >
+                <span className={s.valid ? 'text-primary' : 'text-destructive'}>●</span>
+                <span className="truncate">{s.label}</span>
+                <span className="ml-auto shrink-0 font-mono text-[11px] text-muted-foreground">
+                  {ORIGIN_CN[s.origin] ?? s.origin}
+                </span>
               </button>
             </li>
           ))}
-      </ul>
+        </ul>
+      )}
     </aside>
   )
 }

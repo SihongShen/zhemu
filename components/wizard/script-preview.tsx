@@ -17,7 +17,7 @@ export function ScriptPreview({ screenplay, style }: { screenplay: Screenplay; s
     [screenplay, style],
   )
   return (
-    <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap rounded border bg-muted/30 p-4 font-mono text-sm leading-relaxed">
+    <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap border-2 border-foreground bg-card p-4 font-mono text-sm leading-relaxed shadow-brutal">
       {text}
     </pre>
   )

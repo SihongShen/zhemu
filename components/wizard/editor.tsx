@@ -1,71 +1,97 @@
 'use client'
 /**
- * ④ Editor（前端）：CodeMirror YAML 编辑 + 实时 Zod 校验
- * + ①制式实时切换（招牌 demo）+ ③导出格式 + 版本快照/回滚（VersionPanel）。
+ * ④ 编辑与导出：CodeMirror 改 YAML + 实时 Zod 校验 + ①制式即时切换预览 + 导出 + 版本面板。
  *
- * @see docs/DEVELOPMENT_PLAN.md · Day 3 · 四个维度 / 版本管理
+ * @see docs/DAY3_PLAN.md · §2.D
  */
-import { useLibraryStore, useActiveWork, type ExportFormat } from '@/lib/store/project-store'
-import { VersionPanel } from '@/components/wizard/version-panel'
+import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
+import { useLibraryStore, useActiveWork, type Style } from '@/lib/store/project-store'
+import { yamlToScreenplay } from '@/lib/serialize'
+import { renderCnStandard } from '@/lib/render/cn-standard'
+import { renderHollywood } from '@/lib/render/hollywood'
+import type { Screenplay } from '@/lib/schema'
+import { ScriptPreview } from './script-preview'
+import { VersionPanel } from './version-panel'
+import { EditorToolbar } from './editor-toolbar'
+
+const YamlEditor = dynamic(() => import('./yaml-editor'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[60vh] items-center justify-center text-sm text-muted-foreground">加载编辑器…</div>
+  ),
+})
+
+type Parsed = { ok: true; screenplay: Screenplay } | { ok: false; error: string }
+
+function renderFor(s: Screenplay, style: Style) {
+  return style === 'hollywood' ? renderHollywood(s) : renderCnStandard(s)
+}
+
+function download(filename: string, text: string) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
 
 export function Editor() {
   const work = useActiveWork()
   const setYaml = useLibraryStore((s) => s.setYaml)
   const updateSettings = useLibraryStore((s) => s.updateSettings)
-  if (!work) return null
+  const [parsed, setParsed] = useState<Parsed>({ ok: false, error: '' })
 
-  // TODO(Day3): CodeMirror(work.currentYaml) + 实时 schema 校验
-  const exportFormats: { v: ExportFormat; label: string; disabled?: boolean }[] = [
-    { v: 'yaml', label: 'YAML' },
-    { v: 'text', label: '纯文本' },
-    { v: 'pdf', label: 'PDF（v2）', disabled: true },
-  ]
+  const currentYaml = work?.currentYaml ?? ''
+  const style: Style = work?.settings.style ?? 'cn-standard'
+
+  // 防抖：改完 ~400ms 再解析 + Zod 校验
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!currentYaml.trim()) return setParsed({ ok: false, error: '（空）' })
+      try {
+        setParsed({ ok: true, screenplay: yamlToScreenplay(currentYaml) })
+      } catch (e) {
+        setParsed({ ok: false, error: e instanceof Error ? e.message : String(e) })
+      }
+    }, 400)
+    return () => clearTimeout(t)
+  }, [currentYaml])
+
+  if (!work) return null
+  const title = work.title
 
   return (
-    <section data-step="editor" className="flex gap-4">
-      <div className="flex-1 space-y-3">
-        <div className="flex items-center gap-3 text-sm">
-          {/* ① 制式实时切换：纯渲染，数据不动 */}
-          <span>制式</span>
-          <button
-            data-active={work.settings.style === 'cn-standard'}
-            onClick={() => updateSettings({ style: 'cn-standard' })}
-            className="rounded border px-2 py-0.5 data-[active=true]:bg-foreground data-[active=true]:text-background"
-          >
-            中式
-          </button>
-          <button
-            data-active={work.settings.style === 'hollywood'}
-            onClick={() => updateSettings({ style: 'hollywood' })}
-            className="rounded border px-2 py-0.5 data-[active=true]:bg-foreground data-[active=true]:text-background"
-          >
-            好莱坞
-          </button>
-        </div>
+    <section className="space-y-4">
+      <EditorToolbar
+        valid={parsed.ok}
+        empty={!parsed.ok && parsed.error === '（空）'}
+        style={style}
+        onStyle={(s) => updateSettings({ style: s })}
+        onExportYaml={() => download(`${title}.yaml`, currentYaml)}
+        onExportText={() => parsed.ok && download(`${title}-${style}.txt`, renderFor(parsed.screenplay, style))}
+      />
 
-        <textarea
-          className="h-72 w-full rounded border p-2 font-mono text-sm"
-          value={work.currentYaml}
-          onChange={(e) => setYaml(e.target.value)}
-          placeholder="转换后的剧本 YAML 出现在这里…"
-        />
-
-        {/* ③ 导出格式 */}
-        <div className="flex items-center gap-2 text-sm">
-          <span>导出</span>
-          {exportFormats.map((f) => (
-            <button
-              key={f.v}
-              disabled={f.disabled}
-              className="rounded border px-2 py-0.5 disabled:opacity-40"
-            >
-              {f.label}
-            </button>
-          ))}
+      {/* 编辑 | 预览 | 版本 */}
+      <div className="flex flex-col gap-4 xl:flex-row">
+        <div className="grid flex-1 gap-4 lg:grid-cols-2">
+          <div className="overflow-hidden border-2 border-foreground bg-card shadow-brutal">
+            <YamlEditor value={currentYaml} onChange={setYaml} />
+          </div>
+          <div>
+            {parsed.ok ? (
+              <ScriptPreview screenplay={parsed.screenplay} style={style} />
+            ) : (
+              <div className="flex h-full items-center justify-center whitespace-pre-line border-2 border-foreground bg-muted/40 p-4 text-center text-sm text-muted-foreground shadow-brutal">
+                {parsed.error === '（空）' ? '还没有内容' : `YAML 有误，无法渲染预览：\n${parsed.error}`}
+              </div>
+            )}
+          </div>
         </div>
+        <VersionPanel />
       </div>
-
-      <VersionPanel />
     </section>
   )
 }
