@@ -1,78 +1,93 @@
 /**
- * Day 2 冒烟测试：整本小说 → 合法 Screenplay → YAML。验「整本跑通」。
- * 仅本地 dev 可用（一次跑会触发 extractBible + 逐章 convert + 摘要，多次付费调用）。
+ * Day 2 整本转换的冒烟 / 演示端点：小说 → 合法 Screenplay → YAML + 双制式渲染。
  *
- * 跑法：`npm run dev` → http://localhost:3000/api/smoke-convert
+ * - **本地 dev**：实时跑整本转换（extractBible + 逐章 convert + 摘要，较慢，~分钟级）。
+ * - **线上 production**：返回**预生成 mock**（demo-screenplay.json 渲染），**不触发 LLM**，
+ *   避免这个公开端点被反复请求无限刷 API / 刷额度。
+ * - 实时测试另走 dev（或自建私有端点），不放公开。
  *
- * @see docs/DAY2_PLAN.md · §3
+ * @see docs/DAY2_PLAN.md · §3  /  docs/DAY3_PLAN.md · §2.B
  */
 import { NextResponse } from 'next/server'
 import { Screenplay } from '@/lib/schema'
 import { extractBible } from '@/lib/pipeline/extract-bible'
 import { runConversion } from '@/lib/pipeline/run'
+import { screenplayToYaml } from '@/lib/serialize'
+import { renderCnStandard } from '@/lib/render/cn-standard'
+import { renderHollywood } from '@/lib/render/hollywood'
 import { SAMPLE_NOVEL } from './sample-novel'
+import demoScreenplay from './demo-screenplay.json'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-export async function GET() {
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json(
-      { ok: false, error: 'smoke-convert 仅本地 dev 可用（整本转换会触发多次付费调用）' },
-      { status: 404 },
-    )
+/** 从一份 screenplay 组装响应（checks + yaml + 双制式渲染），不依赖运行时 report。 */
+function buildResponse(screenplay: Screenplay, mode: 'live' | 'mock', yaml?: string) {
+  const ids = new Set(screenplay.bible.characters.map((c) => c.id))
+  const used = new Set<string>()
+  const dangling: string[] = []
+  const flaggedScenes: string[] = []
+  let sceneCount = 0
+
+  for (const u of screenplay.script) {
+    for (const s of u.scenes) {
+      sceneCount++
+      if (s.needs_review) flaggedScenes.push(s.id)
+      for (const cp of s.characters_present) {
+        used.add(cp)
+        if (!ids.has(cp)) dangling.push(cp)
+      }
+      for (const el of s.elements) {
+        if (el.type === 'dialogue') {
+          used.add(el.character)
+          if (!ids.has(el.character)) dangling.push(el.character)
+        }
+      }
+    }
   }
+  // 回填角色可从 char_unknown 前缀的 id 反推
+  const backfilled = screenplay.bible.characters.filter((c) => c.id.startsWith('char_unknown')).map((c) => c.id)
+
+  return {
+    ok: dangling.length === 0,
+    mode,
+    checks: {
+      chapterCount: screenplay.script.length,
+      sceneCount,
+      characterCount: ids.size,
+      refIntegrity: dangling.length === 0,
+      danglingRefs: dangling,
+      backfilled,
+      flaggedScenes,
+      charsUsedAcrossChapters: used.size,
+    },
+    yaml: yaml ?? screenplayToYaml(screenplay),
+    render: { cnStandard: renderCnStandard(screenplay), hollywood: renderHollywood(screenplay) },
+    screenplay,
+  }
+}
+
+export async function GET() {
+  // 线上：返回预生成 mock，不调 LLM
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(buildResponse(demoScreenplay as unknown as Screenplay, 'mock'))
+  }
+
+  // 本地 dev：实时跑
   if (!process.env.LLM_API_KEY) {
     return NextResponse.json({ ok: false, error: '未配置 LLM_API_KEY' }, { status: 500 })
   }
-
   try {
     const bible = await extractBible(SAMPLE_NOVEL)
-    const { screenplay, yaml, report } = await runConversion({
+    const { screenplay, yaml } = await runConversion({
       novel: SAMPLE_NOVEL,
       bible,
       settings: { lengthForm: 'feature', adaptationMode: 'balanced', style: 'cn-standard' },
       title: '雾港',
     })
-    Screenplay.parse(screenplay) // schema 合法性，抛错即失败
-
-    // 引用完整性 + 跨章一致性
-    const ids = new Set(screenplay.bible.characters.map((c) => c.id))
-    const used = new Set<string>()
-    const dangling: string[] = []
-    let sceneCount = 0
-    for (const u of screenplay.script) {
-      for (const s of u.scenes) {
-        sceneCount++
-        for (const cp of s.characters_present) {
-          used.add(cp)
-          if (!ids.has(cp)) dangling.push(cp)
-        }
-        for (const el of s.elements) {
-          if (el.type === 'dialogue') {
-            used.add(el.character)
-            if (!ids.has(el.character)) dangling.push(el.character)
-          }
-        }
-      }
-    }
-
-    return NextResponse.json({
-      ok: dangling.length === 0,
-      checks: {
-        chapterCount: screenplay.script.length,
-        sceneCount,
-        characterCount: ids.size,
-        refIntegrity: dangling.length === 0,
-        danglingRefs: dangling,
-        backfilled: report.backfilled,
-        flaggedScenes: report.flaggedScenes,
-        charsUsedAcrossChapters: used.size,
-      },
-      yaml,
-      screenplay,
-    })
+    Screenplay.parse(screenplay)
+    return NextResponse.json(buildResponse(screenplay, 'live', yaml))
   } catch (err) {
     return NextResponse.json(
       { ok: false, error: err instanceof Error ? err.message : String(err) },

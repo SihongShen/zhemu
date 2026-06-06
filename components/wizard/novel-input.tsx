@@ -1,75 +1,83 @@
 'use client'
 /**
- * ① NovelInput（前端）：粘贴/上传小说 + 自动分章预览 + 【转换设置】。
- * 转换设置 = ②体量 + ④改编自由度（都烤进数据，转换前定）+ ①默认制式（可后改）。
+ * ① 导入小说：两个拖拽上传区——「世界观 / 人设」（可选，作 grounding）+「小说正文」（必填）→ 抽取设定。
+ * 转换设置（体量/改编自由度/制式）已移到 ③ 生成前。
  *
- * @see docs/DEVELOPMENT_PLAN.md · Day 3 · 四个维度
+ * @see docs/DAY3_PLAN.md · §2.C
  */
+import { useState } from 'react'
 import { useLibraryStore, useActiveWork } from '@/lib/store/project-store'
+import { Dropzone } from './dropzone'
+import { BTN_PRIMARY } from '@/components/brutal-ui'
 
 export function NovelInput() {
   const work = useActiveWork()
   const setNovel = useLibraryStore((s) => s.setNovel)
-  const updateSettings = useLibraryStore((s) => s.updateSettings)
-  if (!work) return null
-  const { settings } = work
+  const setBibleDoc = useLibraryStore((s) => s.setBibleDoc)
+  const setBible = useLibraryStore((s) => s.setBible)
+  const setStatus = useLibraryStore((s) => s.setStatus)
+  const setStep = useLibraryStore((s) => s.setStep)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
-  // TODO(Day3): 上传 + 分章预览 + "下一步"
+  if (!work) return null
+
+  async function startExtract() {
+    if (!work!.novel.trim()) {
+      setError('请先上传或粘贴小说正文')
+      return
+    }
+    setError('')
+    setBusy(true)
+    try {
+      const res = await fetch('/api/extract-bible', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ novel: work!.novel, bibleDoc: work!.bibleDoc || undefined }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? '抽取失败')
+      setBible(data.bible)
+      setStatus('bible_ready')
+      setStep('bible')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
-    <section data-step="input" className="space-y-6">
+    <section className="space-y-8">
       <div>
-        <h2 className="mb-2 font-semibold">输入小说</h2>
-        <textarea
-          className="h-48 w-full rounded border p-2"
-          value={work.novel}
-          onChange={(e) => setNovel(e.target.value)}
-          placeholder="粘贴小说正文（3+ 章）…"
-        />
+        <h2 className="font-heading text-2xl font-black tracking-tight">导入小说</h2>
+        <p className="mt-1.5 text-sm text-muted-foreground">先丢进原文（可附设定文档），AI 会读完并反推人物与世界观。</p>
       </div>
 
-      {/* 转换设置：②④ 烤进数据，①默认。真做的可选，未做的灰置标 v2 */}
-      <fieldset className="space-y-3 rounded border p-3">
-        <legend className="px-1 text-sm font-semibold">转换设置</legend>
+      <Dropzone
+        label="世界观 / 人设"
+        optional
+        hint="有就上传，AI 会以它为准（grounding）；没有则全靠小说反推"
+        value={work.bibleDoc ?? ''}
+        onChange={setBibleDoc}
+      />
 
-        <label className="flex items-center gap-2 text-sm">
-          ② 体量
-          <select
-            value={settings.lengthForm}
-            onChange={(e) => updateSettings({ lengthForm: e.target.value as never })}
-          >
-            <option value="feature">电影 / 标准长片</option>
-            <option value="short" disabled>
-              短剧（v2）
-            </option>
-            <option value="series" disabled>
-              电视剧（v2）
-            </option>
-          </select>
-        </label>
+      <Dropzone
+        label="小说正文"
+        hint="3+ 章效果最好。支持 .txt / .md / .docx，可多选（按文件名顺序拼接）"
+        value={work.novel}
+        onChange={setNovel}
+      />
 
-        <label className="flex items-center gap-2 text-sm">
-          ④ 改编自由度
-          <select
-            value={settings.adaptationMode}
-            onChange={(e) => updateSettings({ adaptationMode: e.target.value as never })}
-          >
-            <option value="faithful">忠实原作</option>
-            <option value="balanced">平衡</option>
-            <option value="free">自由改编</option>
-          </select>
-        </label>
+      {error && (
+        <p className="border-2 border-destructive bg-destructive/10 px-4 py-2 text-sm font-bold text-destructive">{error}</p>
+      )}
 
-        <label className="flex items-center gap-2 text-sm">
-          ① 默认制式
-          <select
-            value={settings.style}
-            onChange={(e) => updateSettings({ style: e.target.value as never })}
-          >
-            <option value="cn-standard">中式</option>
-            <option value="hollywood">好莱坞</option>
-          </select>
-        </label>
-      </fieldset>
+      <div className="flex items-center gap-3">
+        <button onClick={startExtract} disabled={busy} className={BTN_PRIMARY}>
+          {busy ? '正在阅读小说，梳理人物与世界观…' : '开始解析 →'}
+        </button>
+      </div>
     </section>
   )
 }

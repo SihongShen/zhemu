@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" className={cn("font-sans", notoSans.variable, playfairDisplayHeading.variable)}>
-      <body className="antialiased">{children}</body>
+      <body className="min-h-screen text-[15px] antialiased">{children}</body>
     </html>
   );
 }
