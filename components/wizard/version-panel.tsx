@@ -8,7 +8,7 @@ import { useLibraryStore, useActiveWork } from '@/lib/store/project-store'
 
 const ORIGIN_CN: Record<string, string> = { convert: '生成', edit: '手动', regen: '重生' }
 
-export function VersionPanel() {
+export function VersionPanel({ valid }: { valid: boolean }) {
   const work = useActiveWork()
   const rollback = useLibraryStore((s) => s.rollback)
   const snapshot = useLibraryStore((s) => s.snapshot)
@@ -23,7 +23,7 @@ export function VersionPanel() {
           版本
         </span>
         <button
-          onClick={() => snapshot({ label: '手动保存', origin: 'edit', valid: true })}
+          onClick={() => snapshot({ label: '手动保存', origin: 'edit', valid })}
           className="border-2 border-foreground bg-background px-2 py-1 text-xs font-bold transition-colors hover:bg-accent"
         >
           存为版本

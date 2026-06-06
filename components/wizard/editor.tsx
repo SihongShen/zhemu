@@ -90,7 +90,7 @@ export function Editor() {
             )}
           </div>
         </div>
-        <VersionPanel />
+        <VersionPanel valid={parsed.ok} />
       </div>
     </section>
   )
