@@ -1,25 +1,22 @@
 /**
- * 后端入口（薄路由层）：POST 单章 → 该章 Unit（场景）。
- * 客户端逐章串行调用，每章带上一章的滚动摘要作前情。
- * **只转单章**；滚动摘要由 /api/update-summary 单独负责——拆开各自稳在 serverless 60s 内。
+ * 后端入口（薄路由层）：POST 上一版摘要 + 一章 → 更新后的滚动摘要。
+ * 与 /api/convert-chapter 拆开：转换一章后客户端再调本端点更新摘要，给下一章用。
+ * 拆开让单次调用各自稳在 serverless 60s 内（避免 convert+summary 合并撞线）。
  *
  * @see docs/DAY3_PLAN.md · §2.A
  */
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { Bible } from '@/lib/schema'
-import { ChapterReq, SettingsReq } from '@/lib/api-schema'
-import { convertChapter } from '@/lib/pipeline/convert-chapter'
+import { ChapterReq } from '@/lib/api-schema'
+import { updateSummary } from '@/lib/pipeline/summary'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const ReqSchema = z.object({
+  prevSummary: z.string().default(''),
   chapter: ChapterReq,
-  bible: Bible, // 复用业务 schema 校验客户端传来的 bible（含 id 唯一性）
-  runningSummary: z.string().default(''),
-  settings: SettingsReq,
 })
 
 export async function POST(req: Request) {
@@ -39,11 +36,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: '参数校验失败', issues: parsed.error.issues }, { status: 400 })
   }
 
-  const { chapter, bible, runningSummary, settings } = parsed.data
+  const { prevSummary, chapter } = parsed.data
 
   try {
-    const unit = await convertChapter({ chapter, bible, runningSummary, settings })
-    return NextResponse.json({ unit })
+    const summary = await updateSummary({ prevSummary, chapter })
+    return NextResponse.json({ summary })
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : String(err) },
