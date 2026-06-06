@@ -53,10 +53,23 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      // 专业感：全局去圆角（所有 rounded-* 都为直角）
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        none: "0",
+        sm: "0",
+        DEFAULT: "0",
+        md: "0",
+        lg: "0",
+        xl: "0",
+        "2xl": "0",
+        "3xl": "0",
+        full: "0",
+      },
+      boxShadow: {
+        // 野兽派硬投影（直角 + 实心位移阴影）
+        brutal: "6px 6px 0 0 hsl(var(--foreground))",
+        "brutal-lg": "10px 10px 0 0 hsl(var(--foreground))",
+        "brutal-primary": "6px 6px 0 0 hsl(var(--primary))",
       },
       keyframes: {
         "accordion-down": {
@@ -67,10 +80,41 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        // 跑马灯：横向无限滚动
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        // 开幕：自顶向下展开（幕布隐喻）
+        curtain: {
+          from: { transform: "scaleY(0)", opacity: "0" },
+          to: { transform: "scaleY(1)", opacity: "1" },
+        },
+        // 终端光标闪烁
+        blink: {
+          "0%, 49%": { opacity: "1" },
+          "50%, 100%": { opacity: "0" },
+        },
+        // 漂浮
+        "float-y": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        // 折叠线生长
+        "fold-grow": {
+          from: { transform: "scaleX(0)" },
+          to: { transform: "scaleX(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        marquee: "marquee 28s linear infinite",
+        "marquee-fast": "marquee 16s linear infinite",
+        curtain: "curtain 0.7s cubic-bezier(0.22,1,0.36,1) both",
+        blink: "blink 1.1s steps(1) infinite",
+        "float-y": "float-y 4s ease-in-out infinite",
+        "fold-grow": "fold-grow 0.8s cubic-bezier(0.22,1,0.36,1) both",
       },
     },
   },

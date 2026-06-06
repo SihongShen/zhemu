@@ -2,50 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 配色：雾港（浅色冷调）—— 冷白底 + 深岩蓝字 + 雾蓝强调 */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: 210 24% 97%;
+    --foreground: 209 24% 16%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 209 24% 16%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
+    --popover-foreground: 209 24% 16%;
+    --primary: 203 38% 39%;
+    --primary-foreground: 210 33% 98%;
+    --secondary: 208 25% 91%;
+    --secondary-foreground: 209 24% 22%;
+    --muted: 208 24% 93%;
+    --muted-foreground: 209 12% 42%;
+    --accent: 203 40% 90%;
+    --accent-foreground: 203 40% 28%;
+    --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --radius: 0.5rem;
+    --border: 208 22% 87%;
+    --input: 208 22% 87%;
+    --ring: 203 38% 45%;
+    --radius: 0;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --background: 209 30% 10%;
+    --foreground: 210 20% 92%;
+    --card: 209 28% 13%;
+    --card-foreground: 210 20% 92%;
+    --popover: 209 28% 13%;
+    --popover-foreground: 210 20% 92%;
+    --primary: 203 45% 58%;
+    --primary-foreground: 209 35% 12%;
+    --secondary: 209 22% 20%;
+    --secondary-foreground: 210 20% 92%;
+    --muted: 209 22% 18%;
+    --muted-foreground: 209 14% 62%;
+    --accent: 209 25% 22%;
+    --accent-foreground: 210 20% 92%;
+    --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    --border: 209 20% 22%;
+    --input: 209 20% 24%;
+    --ring: 203 45% 58%;
   }
 }
 
@@ -55,5 +56,44 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* —— 落地页：滚动揭示 + 野兽派工具 —— */
+@layer utilities {
+  /* 进入视口才显形（配合 IntersectionObserver 加 .is-visible） */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  /* 网格底纹（蓝图感） */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
+
+/* 尊重用户的减少动效偏好：关掉一切装饰性动画 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

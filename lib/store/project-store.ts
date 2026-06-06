@@ -5,9 +5,11 @@
  *
  * @see docs/DEVELOPMENT_PLAN.md · 持久化与作品库 / 版本管理 / 四个维度
  */
+import { useEffect, useState } from 'react'
 import { create } from 'zustand'
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware'
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval'
+import type { Bible } from '@/lib/schema'
 
 // ——— 四个维度（命名见 DEVELOPMENT_PLAN）———
 export type Style = 'cn-standard' | 'hollywood' //          ① 制式：自由，可切
@@ -48,6 +50,8 @@ export interface Work {
   status: WorkStatus
   settings: WorkSettings
   novel: string
+  bibleDoc?: string // ① 可选上传的「世界观/人设」设定文档，抽取时作 grounding
+  bible?: Bible // ① 抽取 → ② 确认 → ③ 转换都用它（id 权威源）
   currentYaml: string
   snapshots: Snapshot[]
   seq: number // 单调快照编号源（只增不减，避免删除后复用 id）
@@ -73,6 +77,8 @@ interface LibraryState {
   // —— 当前作品（都作用在 activeWorkId 上，无活动作品则 no-op）——
   setStep: (s: WizardStep) => void
   setNovel: (n: string) => void
+  setBibleDoc: (t: string) => void
+  setBible: (b: Bible) => void
   setYaml: (y: string) => void
   setStatus: (s: WorkStatus) => void
   updateSettings: (patch: Partial<WorkSettings>) => void
@@ -154,6 +160,8 @@ export const useLibraryStore = create<LibraryState>()(
 
         setStep: (step) => set({ step }),
         setNovel: (novel) => mutateActive((w) => ({ ...w, novel })),
+        setBibleDoc: (bibleDoc) => mutateActive((w) => ({ ...w, bibleDoc })),
+        setBible: (bible) => mutateActive((w) => ({ ...w, bible })),
         setYaml: (currentYaml) => mutateActive((w) => ({ ...w, currentYaml })),
         setStatus: (status) => mutateActive((w) => ({ ...w, status })),
         updateSettings: (patch) =>
@@ -207,6 +215,20 @@ export const useLibraryStore = create<LibraryState>()(
 /** 取当前活动作品（无则 null）。读当前作品字段统一用它。 */
 export const useActiveWork = (): Work | null =>
   useLibraryStore((s) => (s.activeWorkId ? s.works[s.activeWorkId] ?? null : null))
+
+/**
+ * 等待 persist 的异步水合（IndexedDB）完成。
+ * 用于 /studio 这类「直连即判断活动作品」的页面，避免水合前误判为无作品而错误跳转。
+ */
+export function useHasHydrated(): boolean {
+  const [hydrated, setHydrated] = useState(false)
+  useEffect(() => {
+    if (useLibraryStore.persist.hasHydrated()) setHydrated(true)
+    const unsub = useLibraryStore.persist.onFinishHydration(() => setHydrated(true))
+    return unsub
+  }, [])
+  return hydrated
+}
 
 /** 超过上限时，优先丢弃最旧的 convert/regen 自动快照，尽量保留手动 edit。 */
 function capSnapshots(list: Snapshot[]): Snapshot[] {
