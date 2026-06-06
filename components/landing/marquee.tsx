@@ -1,6 +1,7 @@
 /**
  * 落地页共享原语：跑马灯 + 大写描边标签。从 page.tsx 拆出复用。
  */
+import type { ReactNode } from 'react'
 
 /** 横向无限滚动跑马灯。 */
 export function Marquee({ items, className = '' }: { items: string[]; className?: string }) {
@@ -20,7 +21,7 @@ export function Marquee({ items, className = '' }: { items: string[]; className?
 }
 
 /** 大写描边小标签。 */
-export function Tag({ children }: { children: React.ReactNode }) {
+export function Tag({ children }: { children: ReactNode }) {
   return (
     <span className="inline-block border-2 border-foreground bg-background px-3 py-1 text-xs font-bold uppercase tracking-[0.16em]">
       {children}

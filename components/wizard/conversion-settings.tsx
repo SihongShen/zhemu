@@ -7,6 +7,7 @@
  * - 默认制式（中式 / 好莱坞，渲染期可切）
  * - 输出格式（占位：导出时选择）
  */
+import type { ReactNode } from 'react'
 import type { WorkSettings } from '@/lib/store/project-store'
 import { BTN_PRIMARY, BTN_GHOST, CARD } from '@/components/brutal-ui'
 
@@ -92,7 +93,7 @@ function Row({
   n: string
   label: string
   hint?: string
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <div className="flex items-center justify-between gap-4 p-4">
