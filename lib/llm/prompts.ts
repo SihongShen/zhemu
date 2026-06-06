@@ -73,9 +73,12 @@ export const convertChapterUser = (args: {
   chapterText: string
 }): string => {
   const lengthHint: Record<LengthForm, string> = {
-    feature: '电影 / 标准长片（正常场景颗粒度）',
-    short: '短剧（场景更碎、可多用 shot 镜头）',
-    series: '电视剧（可分集，本期按标准处理）',
+    feature:
+      '电影 / 标准长片：场景颗粒度正常，单场可承载较完整的戏剧动作，节奏向银幕叙事靠拢。',
+    short:
+      '竖屏短剧：场景更碎、节奏更快，多用强冲突钩子开场；优先短场 + shot 镜头切分，对白精炼直给。',
+    series:
+      '电视剧 / 长剧集：本章按单集片段处理，保留人物关系铺垫与悬念留扣，场景可略展开，允许多线并行的过场。',
   }
   const fidelityHint: Record<AdaptationMode, string> = {
     faithful: '忠实原作（尽量贴原文对白与情节，不加戏）',

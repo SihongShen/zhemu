@@ -2,7 +2,7 @@
 /**
  * 转换设置面板（生成剧本前）：四个正交维度的选择 / 占位。
  * 无论是否已有设定都常驻显示——没设定时设置仍可预先调好，仅「开始生成」禁用。
- * - 体量（电影 / 短剧·电视剧占位）
+ * - 体量（电影长片 / 竖屏短剧 / 电视剧集，影响场景颗粒度与节奏）
  * - 改编自由度（忠实 / 平衡 / 自由）
  * - 默认制式（中式 / 好莱坞，渲染期可切）
  * - 输出格式（占位：导出时选择）
@@ -32,14 +32,14 @@ export function ConversionSettings({
       </div>
 
       <div className={`${CARD} divide-y-2 divide-foreground`}>
-        <Row n="①" label="体量" hint="剧本规模（短剧 / 电视剧开发中）">
+        <Row n="①" label="体量" hint="决定场景颗粒度与节奏：长片 / 短剧 / 剧集">
           <Select
             value={settings.lengthForm}
             onChange={(v) => onChange({ lengthForm: v as never })}
             options={[
               { v: 'feature', t: '电影 / 标准长片' },
-              { v: 'short', t: '短剧（开发中）', disabled: true },
-              { v: 'series', t: '电视剧（开发中）', disabled: true },
+              { v: 'short', t: '竖屏短剧' },
+              { v: 'series', t: '电视剧 / 剧集' },
             ]}
           />
         </Row>
