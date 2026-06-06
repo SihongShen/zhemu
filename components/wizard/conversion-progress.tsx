@@ -41,7 +41,7 @@ export function ConversionProgress({
         <>
           <div className="space-y-2.5">
             <div className="flex items-center justify-between text-sm font-bold">
-              <span>{total ? `正在生成 第 ${done} / ${total} 章…` : '正在分章…'}</span>
+              <span>{total ? `正在生成 第 ${Math.min(done + 1, total)} / ${total} 章…` : '正在分章…'}</span>
               <span className="font-mono text-muted-foreground">{pct}%</span>
             </div>
             <div className="h-4 w-full overflow-hidden border-2 border-foreground bg-background">

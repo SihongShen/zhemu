@@ -106,13 +106,14 @@ export function Dropzone({
           className={`h-48 resize-y ${INPUT}`}
         />
       ) : value ? (
-        <div
+        <button
+          type="button"
           onClick={() => setEditing(true)}
-          className="max-h-40 cursor-text overflow-auto whitespace-pre-wrap border-2 border-foreground bg-card p-4 text-sm leading-relaxed text-muted-foreground shadow-brutal"
+          className="block max-h-40 w-full cursor-text overflow-auto whitespace-pre-wrap border-2 border-foreground bg-card p-4 text-left text-sm leading-relaxed text-muted-foreground shadow-brutal focus:outline-none focus:ring-2 focus:ring-primary"
         >
           {value.slice(0, 400)}
           {value.length > 400 ? ' …' : ''}
-        </div>
+        </button>
       ) : (
         <div
           role="button"

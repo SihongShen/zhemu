@@ -81,7 +81,7 @@ export default function WorksPage() {
                 onClick={() => {
                   if (confirm(`删除「${w.title}」？此操作不可撤销。`)) deleteWork(w.id)
                 }}
-                className="absolute right-3 top-3 border-2 border-transparent px-2 py-0.5 text-xs font-bold text-muted-foreground opacity-0 transition hover:border-destructive hover:text-destructive group-hover:opacity-100"
+                className="absolute right-3 top-3 border-2 border-transparent px-2 py-0.5 text-xs font-bold text-muted-foreground opacity-0 transition hover:border-destructive hover:text-destructive focus:opacity-100 group-hover:opacity-100"
               >
                 删除
               </button>

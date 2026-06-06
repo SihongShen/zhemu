@@ -34,7 +34,11 @@ export function Conversion() {
 
   async function run() {
     const bible = work!.bible
-    if (!bible) return
+    if (!bible) {
+      setError('还没有设定，请先回到「导入小说」完成解析并确认设定。')
+      setPhase('error')
+      return
+    }
     const settings = work!.settings
     const chapters = segment(work!.novel)
     setTotal(chapters.length)
