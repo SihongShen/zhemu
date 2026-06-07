@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { create } from 'zustand'
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware'
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval'
-import type { Bible } from '@/lib/schema'
+import type { Bible, Unit } from '@/lib/schema'
 
 // ——— 四个维度（命名见 DEVELOPMENT_PLAN）———
 export type Style = 'cn-standard' | 'hollywood' //          ① 制式：自由，可切
@@ -44,6 +44,13 @@ export interface Snapshot {
 export type WizardStep = 'input' | 'bible' | 'conversion' | 'editor'
 export type WorkStatus = 'draft' | 'bible_ready' | 'converting' | 'done' | 'error'
 
+/** 逐章转换的断点续跑进度（落在 work 上、持久化到 IndexedDB）。同一 job（sig 相同）才复用。 */
+export interface ConvertProgress {
+  sig: string // job 指纹：小说长度 + 章数 + ②④①设置；变了就视为新任务、不复用旧进度
+  units: Unit[] // 已成功转换的章节单元（按章序）
+  runningSummary: string // 截至最后一个已完成章的滚动摘要，用于续跑下一章
+}
+
 export interface Work {
   id: string
   title: string
@@ -54,6 +61,7 @@ export interface Work {
   bible?: Bible // ① 抽取 → ② 确认 → ③ 转换都用它（id 权威源）
   currentYaml: string
   snapshots: Snapshot[]
+  convert?: ConvertProgress // ③ 转换中的断点（成功后清空）；中途失败可续跑
   seq: number // 单调快照编号源（只增不减，避免删除后复用 id）
   createdAt: number
   updatedAt: number
@@ -92,6 +100,7 @@ interface LibraryState {
   setYaml: (y: string) => void
   setStatus: (s: WorkStatus) => void
   updateSettings: (patch: Partial<WorkSettings>) => void
+  setConvertProgress: (p: ConvertProgress | undefined) => void // 落/清转换断点
   snapshot: (args: { label: string; origin: SnapshotOrigin; valid: boolean }) => void
   rollback: (id: string) => void
 }
@@ -200,13 +209,16 @@ export const useLibraryStore = create<LibraryState>()(
         listWorks: () => Object.values(get().works).sort((a, b) => b.updatedAt - a.updatedAt),
 
         setStep: (step) => set({ step }),
-        setNovel: (novel) => mutateActive((w) => ({ ...w, novel })),
+        // 改动小说/设定/设置都会让旧转换断点失效 → 顺手清掉，避免脏断点长期滞留
+        setNovel: (novel) => mutateActive((w) => ({ ...w, novel, convert: undefined })),
         setBibleDoc: (bibleDoc) => mutateActive((w) => ({ ...w, bibleDoc })),
-        setBible: (bible) => mutateActive((w) => ({ ...w, bible })),
+        setBible: (bible) => mutateActive((w) => ({ ...w, bible, convert: undefined })),
         setYaml: (currentYaml) => mutateActive((w) => ({ ...w, currentYaml })),
         setStatus: (status) => mutateActive((w) => ({ ...w, status })),
         updateSettings: (patch) =>
-          mutateActive((w) => ({ ...w, settings: { ...w.settings, ...patch } })),
+          mutateActive((w) => ({ ...w, settings: { ...w.settings, ...patch }, convert: undefined })),
+
+        setConvertProgress: (convert) => mutateActive((w) => ({ ...w, convert })),
 
         snapshot: ({ label, origin, valid }) =>
           mutateActive((w) => {

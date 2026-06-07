@@ -8,7 +8,7 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { Bible } from '@/lib/schema'
-import { ChapterReq, SettingsReq } from '@/lib/api-schema'
+import { ChapterReq, SettingsReq, SUMMARY_MAX, firstFriendlyError } from '@/lib/api-schema'
 import { convertChapter } from '@/lib/pipeline/convert-chapter'
 import { checkRateLimit, clientIp } from '@/lib/llm/rate-limit'
 
@@ -19,7 +19,7 @@ export const maxDuration = 60
 const ReqSchema = z.object({
   chapter: ChapterReq,
   bible: Bible, // 复用业务 schema 校验客户端传来的 bible（含 id 唯一性）
-  runningSummary: z.string().default(''),
+  runningSummary: z.string().max(SUMMARY_MAX).default(''),
   settings: SettingsReq,
 })
 
@@ -45,7 +45,10 @@ export async function POST(req: Request) {
 
   const parsed = ReqSchema.safeParse(body)
   if (!parsed.success) {
-    return NextResponse.json({ error: '参数校验失败', issues: parsed.error.issues }, { status: 400 })
+    return NextResponse.json(
+      { error: firstFriendlyError(parsed.error), issues: parsed.error.issues },
+      { status: 400 },
+    )
   }
 
   const { chapter, bible, runningSummary, settings } = parsed.data
@@ -54,8 +57,10 @@ export async function POST(req: Request) {
     const unit = await convertChapter({ chapter, bible, runningSummary, settings })
     return NextResponse.json({ unit })
   } catch (err) {
+    console.error('[convert-chapter]', err)
+    const msg = err instanceof Error ? err.message : String(err)
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : String(err) },
+      { error: process.env.NODE_ENV === 'production' ? '转换失败，请稍后重试' : msg },
       { status: 500 },
     )
   }

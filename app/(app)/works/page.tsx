@@ -3,6 +3,7 @@
  * 我的作品（/works）：作品库。新建 / 打开都进入 /studio 向导。
  * UI 与主页统一：硬描边、硬投影、直角、Playfair 标题。
  */
+import { useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLibraryStore, useHasHydrated, type WorkStatus } from '@/lib/store/project-store'
 import { buildDemoWork, DEMO_SAMPLES, type DemoSample } from '@/lib/_dev/demo-work'
@@ -40,11 +41,18 @@ export default function WorksPage() {
     router.push('/studio')
   }
   // 加载某个《雾港》示例：已存在则直接打开，避免重复点击刷出一堆副本
+  const loadingRef = useRef(false)
   const handleSample = async (sample: DemoSample) => {
-    const existing = works.find((w) => w.title === sample.title)
-    if (existing) openWork(existing.id)
-    else importWork(await buildDemoWork(sample))
-    router.push('/studio')
+    if (loadingRef.current) return // 挡住异步导入期间的二次点击
+    loadingRef.current = true
+    try {
+      const existing = works.find((w) => w.title === sample.title)
+      if (existing) openWork(existing.id)
+      else importWork(await buildDemoWork(sample))
+      router.push('/studio')
+    } finally {
+      loadingRef.current = false
+    }
   }
 
   return (

@@ -11,9 +11,14 @@
  *   LLM_RATELIMIT_PER_IP     单 IP 窗口内最大调用数（默认 100，约够 2 次整本生成）
  *   LLM_DAILY_CAP            全局每日最大调用数（默认 800）
  */
-const WINDOW_MS = Number(process.env.LLM_RATELIMIT_WINDOW_MS ?? 15 * 60 * 1000)
-const PER_IP = Number(process.env.LLM_RATELIMIT_PER_IP ?? 100)
-const DAILY_CAP = Number(process.env.LLM_DAILY_CAP ?? 800)
+// 校验环境变量为有限正数，否则回退默认值（避免空串→0 锁死、乱填→NaN 失效）
+function envInt(name: string, fallback: number): number {
+  const n = Number(process.env[name])
+  return Number.isFinite(n) && n > 0 ? n : fallback
+}
+const WINDOW_MS = envInt('LLM_RATELIMIT_WINDOW_MS', 15 * 60 * 1000)
+const PER_IP = envInt('LLM_RATELIMIT_PER_IP', 100)
+const DAILY_CAP = envInt('LLM_DAILY_CAP', 800)
 
 const hits = new Map<string, number[]>() // ip → 命中时间戳（滑窗内）
 let dayBucket = -1

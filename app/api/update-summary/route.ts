@@ -7,7 +7,7 @@
  */
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { ChapterReq } from '@/lib/api-schema'
+import { ChapterReq, SUMMARY_MAX, firstFriendlyError } from '@/lib/api-schema'
 import { updateSummary } from '@/lib/pipeline/summary'
 import { checkRateLimit, clientIp } from '@/lib/llm/rate-limit'
 
@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const ReqSchema = z.object({
-  prevSummary: z.string().default(''),
+  prevSummary: z.string().max(SUMMARY_MAX).default(''),
   chapter: ChapterReq,
 })
 
@@ -42,7 +42,10 @@ export async function POST(req: Request) {
 
   const parsed = ReqSchema.safeParse(body)
   if (!parsed.success) {
-    return NextResponse.json({ error: '参数校验失败', issues: parsed.error.issues }, { status: 400 })
+    return NextResponse.json(
+      { error: firstFriendlyError(parsed.error), issues: parsed.error.issues },
+      { status: 400 },
+    )
   }
 
   const { prevSummary, chapter } = parsed.data
@@ -51,8 +54,10 @@ export async function POST(req: Request) {
     const summary = await updateSummary({ prevSummary, chapter })
     return NextResponse.json({ summary })
   } catch (err) {
+    console.error('[update-summary]', err)
+    const msg = err instanceof Error ? err.message : String(err)
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : String(err) },
+      { error: process.env.NODE_ENV === 'production' ? '摘要生成失败，请稍后重试' : msg },
       { status: 500 },
     )
   }

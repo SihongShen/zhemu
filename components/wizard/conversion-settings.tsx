@@ -17,12 +17,14 @@ export function ConversionSettings({
   canGenerate,
   onGenerate,
   onGoImport,
+  resume,
 }: {
   settings: WorkSettings
   onChange: (patch: Partial<WorkSettings>) => void
   canGenerate: boolean
   onGenerate: () => void
   onGoImport: () => void
+  resume?: { done: number; total: number }
 }) {
   return (
     <section className="space-y-6 py-4">
@@ -85,9 +87,15 @@ export function ConversionSettings({
         </div>
       )}
 
+      {resume && (
+        <p className="border-2 border-foreground bg-accent/40 px-4 py-2.5 text-sm font-bold">
+          上次已完成 {resume.done} / {resume.total} 章——将从第 {resume.done + 1} 章继续，不重跑前面的。
+        </p>
+      )}
+
       {canGenerate ? (
         <button onClick={onGenerate} className={BTN_PRIMARY}>
-          开始生成 →
+          {resume ? `继续生成 →（第 ${resume.done + 1} 章起）` : '开始生成 →'}
         </button>
       ) : (
         <div className="space-y-3">

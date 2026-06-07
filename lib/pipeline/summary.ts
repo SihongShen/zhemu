@@ -7,6 +7,7 @@
 import type { Chapter } from '@/lib/pipeline/segment'
 import { callText } from '@/lib/llm/client'
 import { summarySystem, summaryUser } from '@/lib/llm/prompts'
+import { SUMMARY_MAX } from '@/lib/api-schema'
 
 export async function updateSummary(args: {
   prevSummary: string
@@ -16,5 +17,6 @@ export async function updateSummary(args: {
     system: summarySystem,
     user: summaryUser(args.prevSummary, args.chapter.text),
   })
-  return text.trim()
+  // 生成端硬截断：prompt 只软性要求 800 字，若模型漂长，挡住它超过路由入参上限导致后续章节 400
+  return text.trim().slice(0, SUMMARY_MAX)
 }
