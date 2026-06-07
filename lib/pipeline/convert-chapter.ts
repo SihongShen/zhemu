@@ -44,8 +44,21 @@ export async function convertChapter(args: {
       let obj: unknown
       try {
         obj = JSON.parse(raw)
-      } catch {
-        return { ok: false, error: '输出不是合法 JSON。请只通过 emit_unit 工具输出。' }
+      } catch (e) {
+        if (process.env.NODE_ENV !== 'production') {
+          const msg = e instanceof Error ? e.message : String(e)
+          const m = msg.match(/position (\d+)/)
+          const pos = m ? Number(m[1]) : -1
+          console.error(`[convert] JSON.parse 失败 (len=${raw.length}):`, msg)
+          if (pos >= 0) {
+            console.error('[convert] 出错处±80:', JSON.stringify(raw.slice(Math.max(0, pos - 80), pos + 80)))
+          }
+        }
+        return {
+          ok: false,
+          error:
+            '输出不是合法 JSON——最常见原因是 text/line 里用了半角双引号 " 当引文。请把所有台词/字句引用改成中文直角引号「」，不要在字符串内使用半角 " 或 \'，确保整体是合法 JSON，只通过 emit_unit 工具输出。',
+        }
       }
       // unit/scene 的 id 下游会被确定性覆盖（unit_chN / sc_N_xx）；
       // 这里给缺失/空的 id 补占位，避免模型漏填 id 触发无谓 repair。
