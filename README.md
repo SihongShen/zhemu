@@ -6,7 +6,9 @@
 
 Schema 版本 `0.1` · 详见 [剧本 YAML Schema 设计文档](docs/剧本YAML_Schema设计文档.md)  
 
-[demo视频](https://www.xiaohongshu.com/discovery/item/6a25882c0000000008024771?source=webshare&xhsshare=pc_web&xsec_token=YB1Sa4tjLXeYpx6orV4-zeqjd94pXSPZ8DgZ6ZuBnIRz0=&xsec_source=pc_share)
+[**demo视频**](https://www.xiaohongshu.com/discovery/item/6a25882c0000000008024771?source=webshare&xhsshare=pc_web&xsec_token=YB1Sa4tjLXeYpx6orV4-zeqjd94pXSPZ8DgZ6ZuBnIRz0=&xsec_source=pc_share)  
+**demo视频备份**：通过网盘分享的文件：zhemu.mp4
+链接: https://pan.baidu.com/s/1pzlN-x2fgVP3qAw9KkgtGw?pwd=naw9 提取码: naw9
 
 ---
 
