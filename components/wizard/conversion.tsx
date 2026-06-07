@@ -54,12 +54,16 @@ export function Conversion() {
       let runningSummary = ''
       for (let i = 0; i < chapters.length; i++) {
         const chapter = chapters[i]
-        const cData = await post('/api/convert-chapter', { chapter, bible, runningSummary, settings })
-        units.push(cData.unit)
-        setDone(i + 1)
-        if (i < chapters.length - 1) {
-          const sData = await post('/api/update-summary', { prevSummary: runningSummary, chapter })
-          runningSummary = sData.summary
+        try {
+          const cData = await post('/api/convert-chapter', { chapter, bible, runningSummary, settings })
+          units.push(cData.unit)
+          setDone(i + 1)
+          if (i < chapters.length - 1) {
+            const sData = await post('/api/update-summary', { prevSummary: runningSummary, chapter })
+            runningSummary = sData.summary
+          }
+        } catch (e) {
+          throw new Error(`第 ${chapter.index} 章处理失败：${e instanceof Error ? e.message : String(e)}`)
         }
       }
       const meta = {

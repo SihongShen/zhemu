@@ -8,14 +8,18 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { extractBible } from '@/lib/pipeline/extract-bible'
 import { checkRateLimit, clientIp } from '@/lib/llm/rate-limit'
+import { NOVEL_MAX, BIBLE_DOC_MAX } from '@/lib/api-schema'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const ReqSchema = z.object({
-  novel: z.string().min(1, '小说正文不能为空').max(500_000),
-  bibleDoc: z.string().max(100_000).optional(),
+  novel: z
+    .string()
+    .min(1, '小说正文不能为空')
+    .max(NOVEL_MAX, `小说过长（超 ${NOVEL_MAX / 10000} 万字），请拆分后分多部上传`),
+  bibleDoc: z.string().max(BIBLE_DOC_MAX, '设定文档过长').optional(),
 })
 
 export async function POST(req: Request) {
@@ -40,7 +44,10 @@ export async function POST(req: Request) {
 
   const parsed = ReqSchema.safeParse(body)
   if (!parsed.success) {
-    return NextResponse.json({ error: '参数校验失败', issues: parsed.error.issues }, { status: 400 })
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? '参数校验失败', issues: parsed.error.issues },
+      { status: 400 },
+    )
   }
 
   try {

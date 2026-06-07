@@ -7,7 +7,7 @@
  */
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { ChapterReq } from '@/lib/api-schema'
+import { ChapterReq, SUMMARY_MAX } from '@/lib/api-schema'
 import { updateSummary } from '@/lib/pipeline/summary'
 import { checkRateLimit, clientIp } from '@/lib/llm/rate-limit'
 
@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const ReqSchema = z.object({
-  prevSummary: z.string().max(20_000).default(''),
+  prevSummary: z.string().max(SUMMARY_MAX).default(''),
   chapter: ChapterReq,
 })
 
@@ -42,7 +42,10 @@ export async function POST(req: Request) {
 
   const parsed = ReqSchema.safeParse(body)
   if (!parsed.success) {
-    return NextResponse.json({ error: '参数校验失败', issues: parsed.error.issues }, { status: 400 })
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? '参数校验失败', issues: parsed.error.issues },
+      { status: 400 },
+    )
   }
 
   const { prevSummary, chapter } = parsed.data

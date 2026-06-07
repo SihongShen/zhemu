@@ -7,6 +7,7 @@
  */
 import { useState } from 'react'
 import { useLibraryStore, useActiveWork } from '@/lib/store/project-store'
+import { NOVEL_MAX, BIBLE_DOC_MAX } from '@/lib/api-schema'
 import { Dropzone } from './dropzone'
 import { BTN_PRIMARY } from '@/components/brutal-ui'
 
@@ -25,6 +26,14 @@ export function NovelInput() {
   async function startExtract() {
     if (!work!.novel.trim()) {
       setError('请先上传或粘贴小说正文')
+      return
+    }
+    if (work!.novel.length > NOVEL_MAX) {
+      setError(`小说约 ${Math.round(work!.novel.length / 10000)} 万字，超过上限 ${NOVEL_MAX / 10000} 万，请拆分后分多部上传`)
+      return
+    }
+    if ((work!.bibleDoc?.length ?? 0) > BIBLE_DOC_MAX) {
+      setError(`设定文档超过 ${BIBLE_DOC_MAX / 10000} 万字上限，请精简后再试`)
       return
     }
     setError('')

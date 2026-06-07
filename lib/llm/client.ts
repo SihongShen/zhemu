@@ -103,9 +103,20 @@ export async function callStructured(args: StructuredCall): Promise<string> {
     )
     console.log(`[llm:${args.toolName}] args尾部120: ${JSON.stringify(tail)}`)
   }
-  // 截断（输出超 max_tokens）→ 工具入参 JSON 必然残缺，repair 重试也只会同样截断；fail-fast 给出可执行错误
+  // 截断兜底：仅当 finish_reason=length **且工具入参确实无法解析**时才判定为截断
+  // （避免恰好顶到上限但入参完整的响应被误杀——某些 OpenAI 兼容端点会这样报 length）
   if (choice?.finish_reason === 'length') {
-    throw new Error('模型输出超长被截断（max_tokens）：请缩短本章篇幅，或调大 maxTokens')
+    const rawArgs = call?.type === 'function' ? call.function.arguments : ''
+    let parseable = false
+    try {
+      JSON.parse(rawArgs)
+      parseable = true
+    } catch {
+      /* 残缺 JSON → 确认是截断 */
+    }
+    if (!parseable) {
+      throw new Error('模型输出超长被截断（max_tokens）：请缩短本章篇幅，或调大 maxTokens')
+    }
   }
   if (!call || call.type !== 'function') {
     // 兜底：若 provider 不支持具名 tool_choice，可改用 JSON mode（response_format）
