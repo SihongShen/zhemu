@@ -66,6 +66,25 @@ export function ConversionSettings({
         </Row>
       </div>
 
+      {settings.adaptationMode === 'free' && (
+        <div className="space-y-2 border-2 border-foreground bg-accent/30 p-4">
+          <label htmlFor="adaptationBrief" className="flex flex-wrap items-center gap-2 text-sm font-bold">
+            <span className="font-heading text-base font-black text-primary">＋</span>
+            自定义改编要求
+            <span className="text-xs font-normal text-muted-foreground">（可选，仅自由改编时生效；体量请用上方①）</span>
+          </label>
+          <textarea
+            id="adaptationBrief"
+            value={settings.adaptationBrief ?? ''}
+            onChange={(e) => onChange({ adaptationBrief: e.target.value })}
+            maxLength={500}
+            placeholder="例：把背景改到近未来赛博港口 / 强化女主复仇线 / 压成 30 分钟独幕剧"
+            className="h-24 w-full resize-y border-2 border-foreground bg-background p-3 text-sm leading-relaxed outline-none transition focus:ring-2 focus:ring-primary"
+          />
+          <p className="text-right text-xs text-muted-foreground">{(settings.adaptationBrief ?? '').length}/500</p>
+        </div>
+      )}
+
       {canGenerate ? (
         <button onClick={onGenerate} className={BTN_PRIMARY}>
           开始生成 →

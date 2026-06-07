@@ -74,7 +74,7 @@ export const convertChapterUser = (args: {
   selectiveBlock: string
   rosterText: string
   runningSummary: string
-  settings: { lengthForm: LengthForm; adaptationMode: AdaptationMode }
+  settings: { lengthForm: LengthForm; adaptationMode: AdaptationMode; adaptationBrief?: string }
   chapterText: string
 }): string => {
   const lengthHint: Record<LengthForm, string> = {
@@ -94,7 +94,11 @@ export const convertChapterUser = (args: {
     // ——— 稳定块（跨章不变，吃前缀缓存）———
     `# 世界观与设定\n${args.constantBlock}`,
     `# 封闭角色清单（character / characters_present 只能用这里的 id）\n${args.rosterText}`,
-    `# 本次设置\n- 体量：${lengthHint[args.settings.lengthForm]}\n- 改编自由度：${fidelityHint[args.settings.adaptationMode]}`,
+    `# 本次设置\n- 体量：${lengthHint[args.settings.lengthForm]}\n- 改编自由度：${fidelityHint[args.settings.adaptationMode]}${
+      args.settings.adaptationMode === 'free' && args.settings.adaptationBrief?.trim()
+        ? `\n- 用户改编要求（自由改编下请优先满足，但仍遵守上方封闭角色清单规则）：${args.settings.adaptationBrief.trim()}`
+        : ''
+    }`,
     // ——— 变化块（每章不同，放最后）———
     args.selectiveBlock ? `# 本章相关角色（仅本章登场）\n${args.selectiveBlock}` : '',
     `# 前情摘要\n${args.runningSummary || '（无，这是第一章）'}`,
