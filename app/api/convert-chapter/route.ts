@@ -2,8 +2,6 @@
  * 后端入口（薄路由层）：POST 单章 → 该章 Unit（场景）。
  * 客户端逐章串行调用，每章带上一章的滚动摘要作前情。
  * **只转单章**；滚动摘要由 /api/update-summary 单独负责——拆开各自稳在 serverless 60s 内。
- *
- * @see docs/DAY3_PLAN.md · §2.A
  */
 import { NextResponse } from 'next/server'
 import { z } from 'zod'

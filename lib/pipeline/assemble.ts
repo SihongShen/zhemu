@@ -2,8 +2,6 @@
  * 组装（workflow step）：units → Screenplay，并做引用完整性校验。
  * 检查每个 dialogue.character / characters_present ∈ bible.characters[].id；
  * 未知引用（含 "__new__:称呼" 占位）→ 回填 stub 角色，并把场景标 needs_review。
- *
- * @see docs/DAY2_PLAN.md · §2
  */
 import { type Bible, type Unit, type Screenplay, type Meta, type CharacterEntry } from '@/lib/schema'
 

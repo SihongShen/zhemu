@@ -1,7 +1,5 @@
 /**
  * 分章 / 分场（workflow step）。有显式章节按章切，无章节按长度切。
- *
- * @see docs/DAY1_PLAN.md · §2
  */
 
 export interface Chapter {

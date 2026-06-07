@@ -2,8 +2,6 @@
  * 后端入口（薄路由层）：POST 上一版摘要 + 一章 → 更新后的滚动摘要。
  * 与 /api/convert-chapter 拆开：转换一章后客户端再调本端点更新摘要，给下一章用。
  * 拆开让单次调用各自稳在 serverless 60s 内（避免 convert+summary 合并撞线）。
- *
- * @see docs/DAY3_PLAN.md · §2.A
  */
 import { NextResponse } from 'next/server'
 import { z } from 'zod'

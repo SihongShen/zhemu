@@ -1,8 +1,6 @@
 /**
  * 修复 loop（workflow）：safeParse 失败 → 把错误回灌给模型让它自修复，最多 N 次。
  * structured output 一定合法的兜底，贯穿抽 bible / 转场景两处。
- *
- * @see docs/DAY1_PLAN.md · §2
  */
 
 export interface RepairOptions<T, R = unknown> {

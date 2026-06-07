@@ -2,8 +2,6 @@
  * 中式剧本渲染器（cn-standard）。纯函数：Screenplay → 文本。
  * 场次标题「场N 时 内/外 地点」、角色名：台词、画外音标（画外音）。
  * 招牌 demo 的另一半——同一份 YAML，紧凑的中式排版。
- *
- * @see docs/DAY3_PLAN.md · §2.B
  */
 import type { Screenplay } from '@/lib/schema'
 

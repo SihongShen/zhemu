@@ -9,8 +9,6 @@
  * 跑法：
  *   - 全部案例： /api/smoke
  *   - 单个案例： /api/smoke?case=with-bible-doc   （省时省钱）
- *
- * @see docs/DAY1_PLAN.md · §3
  */
 import { NextResponse } from 'next/server'
 import { Bible } from '@/lib/schema'

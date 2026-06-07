@@ -3,8 +3,6 @@
  * 拖拽上传区。默认是拖拽/点击上传，而非输入框；上传后可展开查看，或切到粘贴/编辑。
  * 支持多文件（.txt/.md/.docx，按文件名顺序拼接，docx 用 mammoth 解析）。
  * 视觉：野兽派硬描边 + 直角，与主页统一。
- *
- * @see docs/DAY3_PLAN.md · §2.C
  */
 import { useRef, useState } from 'react'
 import { readNovelFiles } from '@/lib/parse-upload'

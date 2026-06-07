@@ -2,8 +2,6 @@
  * 单章转场景（workflow step · 核心）。注入封闭角色清单，禁止就地造 id。
  * 按 ② lengthForm 调颗粒度、按 ④ adaptationMode 调忠实度。
  * id（unit/scene）转换后确定性赋值，不依赖模型，避免跨章撞 id。
- *
- * @see docs/DAY2_PLAN.md · §2
  */
 import { Unit } from '@/lib/schema'
 import type { Bible } from '@/lib/schema'
