@@ -28,7 +28,8 @@ export function assemble(args: { bible: Bible; units: Unit[]; meta: Meta }): {
     const name = ref.startsWith('__new__:')
       ? ref.slice('__new__:'.length).trim() || '未命名角色'
       : ref
-    const reused = characters.find((c) => c.id.startsWith('char_unknown') && c.name === name)
+    // 按名字/别名归并到任何已有角色（含 bible 真角色），避免模型误用 __new__ 把同名角色拆成两个 id
+    const reused = characters.find((c) => c.name === name || c.aliases.includes(name))
     if (reused) return { id: reused.id, isBackfill: true }
     // 生成唯一 id（循环避让，防止与 bible 已有 id 撞）
     let id: string

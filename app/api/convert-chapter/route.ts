@@ -19,7 +19,7 @@ export const maxDuration = 60
 const ReqSchema = z.object({
   chapter: ChapterReq,
   bible: Bible, // 复用业务 schema 校验客户端传来的 bible（含 id 唯一性）
-  runningSummary: z.string().default(''),
+  runningSummary: z.string().max(20_000).default(''),
   settings: SettingsReq,
 })
 
@@ -54,8 +54,10 @@ export async function POST(req: Request) {
     const unit = await convertChapter({ chapter, bible, runningSummary, settings })
     return NextResponse.json({ unit })
   } catch (err) {
+    console.error('[convert-chapter]', err)
+    const msg = err instanceof Error ? err.message : String(err)
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : String(err) },
+      { error: process.env.NODE_ENV === 'production' ? '转换失败，请稍后重试' : msg },
       { status: 500 },
     )
   }

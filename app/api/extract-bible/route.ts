@@ -14,8 +14,8 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const ReqSchema = z.object({
-  novel: z.string().min(1, '小说正文不能为空'),
-  bibleDoc: z.string().optional(),
+  novel: z.string().min(1, '小说正文不能为空').max(500_000),
+  bibleDoc: z.string().max(100_000).optional(),
 })
 
 export async function POST(req: Request) {
@@ -47,8 +47,10 @@ export async function POST(req: Request) {
     const bible = await extractBible(parsed.data.novel, { bibleDoc: parsed.data.bibleDoc })
     return NextResponse.json({ bible })
   } catch (err) {
+    console.error('[extract-bible]', err)
+    const msg = err instanceof Error ? err.message : String(err)
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : String(err) },
+      { error: process.env.NODE_ENV === 'production' ? '抽取失败，请稍后重试' : msg },
       { status: 500 },
     )
   }

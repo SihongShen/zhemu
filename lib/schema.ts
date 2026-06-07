@@ -174,7 +174,7 @@ export const Scene = z.object({
   mode: SceneMode.default('normal'), //     叙事模式（见 SceneMode 枚举：顺叙/闪回/梦境/蒙太奇…）
   synopsis: z.string().optional(), //       本场一句话梗概，便于人快速浏览
   characters_present: z.array(z.string()).default([]), // 本场出场角色 id 列表（戏量统计 + 世界书选择性注入直接读它）
-  elements: z.array(Element), //            场景内容：动作/对白/转场/镜头按顺序排列
+  elements: z.array(Element).min(1), //     场景内容：动作/对白/转场/镜头按顺序排列（至少 1 个，空场景触发 repair 而非静默保留）
   needs_review: z.boolean().default(false), // 转换时靠推断/降级处置（如拿不准角色）则置 true，提示人工复核
   note: z.string().optional(), //           为什么需复核 / 降级原因
 })
@@ -186,7 +186,7 @@ export const Unit = z.object({
   source_chapter: z.number().optional(), // 溯源：对应原文第几章，编辑/重跑可定位
   title: z.string().optional(), //          单元标题（多取自章节标题）
   summary: z.string().optional(), //        该章的滚动摘要："到目前为止发生了什么"，传给下一章保持连贯
-  scenes: z.array(Scene),
+  scenes: z.array(Scene).min(1), //         至少 1 个场景，空章触发 repair 而非静默丢失整章
 })
 export type Unit = z.infer<typeof Unit>
 

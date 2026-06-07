@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const ReqSchema = z.object({
-  prevSummary: z.string().default(''),
+  prevSummary: z.string().max(20_000).default(''),
   chapter: ChapterReq,
 })
 
@@ -51,8 +51,10 @@ export async function POST(req: Request) {
     const summary = await updateSummary({ prevSummary, chapter })
     return NextResponse.json({ summary })
   } catch (err) {
+    console.error('[update-summary]', err)
+    const msg = err instanceof Error ? err.message : String(err)
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : String(err) },
+      { error: process.env.NODE_ENV === 'production' ? '摘要生成失败，请稍后重试' : msg },
       { status: 500 },
     )
   }

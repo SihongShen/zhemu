@@ -8,8 +8,8 @@ import { z } from 'zod'
 /** 一章（对应 lib/pipeline/segment.ts 的 Chapter）。 */
 export const ChapterReq = z.object({
   index: z.number().int().positive(),
-  title: z.string().optional(),
-  text: z.string().min(1),
+  title: z.string().max(200).optional(),
+  text: z.string().min(1).max(50_000), // 单章上限，挡住超长输入直怼 LLM
 })
 
 /** 四维度设置（对应 lib/store 的 WorkSettings）。convert 只用到 ②④，但整份校验更稳。 */

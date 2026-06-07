@@ -6,7 +6,7 @@
  *
  * @see docs/DAY3_PLAN.md · §2.C
  */
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useLibraryStore, useActiveWork } from '@/lib/store/project-store'
 import { segment } from '@/lib/pipeline/segment'
 import { assemble } from '@/lib/pipeline/assemble'
@@ -27,18 +27,21 @@ export function Conversion() {
   const [total, setTotal] = useState(0)
   const [phase, setPhase] = useState<'settings' | 'running' | 'error'>('settings')
   const [error, setError] = useState('')
+  const runningRef = useRef(false) // 同步护栏：挡住双击/重入并发跑两遍
 
   if (!work) return null
 
   const alreadyDone = !!work.currentYaml && work.status === 'done'
 
   async function run() {
+    if (runningRef.current) return
     const bible = work!.bible
     if (!bible) {
       setError('还没有设定，请先回到「导入小说」完成解析并确认设定。')
       setPhase('error')
       return
     }
+    runningRef.current = true
     const settings = work!.settings
     const chapters = segment(work!.novel)
     setTotal(chapters.length)
@@ -74,6 +77,8 @@ export function Conversion() {
       setError(e instanceof Error ? e.message : String(e))
       setPhase('error')
       setStatus('error')
+    } finally {
+      runningRef.current = false
     }
   }
 

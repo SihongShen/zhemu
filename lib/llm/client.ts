@@ -103,6 +103,10 @@ export async function callStructured(args: StructuredCall): Promise<string> {
     )
     console.log(`[llm:${args.toolName}] args尾部120: ${JSON.stringify(tail)}`)
   }
+  // 截断（输出超 max_tokens）→ 工具入参 JSON 必然残缺，repair 重试也只会同样截断；fail-fast 给出可执行错误
+  if (choice?.finish_reason === 'length') {
+    throw new Error('模型输出超长被截断（max_tokens）：请缩短本章篇幅，或调大 maxTokens')
+  }
   if (!call || call.type !== 'function') {
     // 兜底：若 provider 不支持具名 tool_choice，可改用 JSON mode（response_format）
     throw new Error('模型未返回 function tool_call；检查 provider 是否支持 function calling / 具名 tool_choice')
