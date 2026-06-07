@@ -10,6 +10,7 @@
  */
 import { NextResponse } from 'next/server'
 import { Screenplay } from '@/lib/schema'
+import type { LengthForm } from '@/lib/store/project-store'
 import { extractBible } from '@/lib/pipeline/extract-bible'
 import { runConversion } from '@/lib/pipeline/run'
 import { screenplayToYaml } from '@/lib/serialize'
@@ -68,22 +69,26 @@ function buildResponse(screenplay: Screenplay, mode: 'live' | 'mock', yaml?: str
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   // 线上：返回预生成 mock，不调 LLM
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json(buildResponse(demoScreenplay as unknown as Screenplay, 'mock'))
   }
 
-  // 本地 dev：实时跑
+  // 本地 dev：实时跑。可选 ?length=feature|short|series 切体量（默认 feature）。
   if (!process.env.LLM_API_KEY) {
     return NextResponse.json({ ok: false, error: '未配置 LLM_API_KEY' }, { status: 500 })
   }
+  const lp = new URL(req.url).searchParams.get('length')
+  const lengthForm: LengthForm = (['feature', 'short', 'series'] as const).includes(lp as never)
+    ? (lp as LengthForm)
+    : 'feature'
   try {
     const bible = await extractBible(SAMPLE_NOVEL)
     const { screenplay, yaml } = await runConversion({
       novel: SAMPLE_NOVEL,
       bible,
-      settings: { lengthForm: 'feature', adaptationMode: 'balanced', style: 'cn-standard' },
+      settings: { lengthForm, adaptationMode: 'balanced', style: 'cn-standard' },
       title: '雾港',
     })
     Screenplay.parse(screenplay)
