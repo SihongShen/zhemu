@@ -93,7 +93,16 @@ export async function callStructured(args: StructuredCall): Promise<string> {
   const res = await getClient().chat.completions.create(body)
   logCache(args.toolName, res.usage)
 
-  const call = res.choices[0]?.message?.tool_calls?.[0]
+  const choice = res.choices[0]
+  const call = choice?.message?.tool_calls?.[0]
+  if (process.env.NODE_ENV !== 'production') {
+    const argLen = call?.type === 'function' ? call.function.arguments.length : 0
+    const tail = call?.type === 'function' ? call.function.arguments.slice(-120) : ''
+    console.log(
+      `[llm:${args.toolName}] finish=${choice?.finish_reason} argLen=${argLen} content=${(choice?.message?.content ?? '').length} reasoning=${((choice?.message as { reasoning_content?: string })?.reasoning_content ?? '').length}`,
+    )
+    console.log(`[llm:${args.toolName}] args尾部120: ${JSON.stringify(tail)}`)
+  }
   if (!call || call.type !== 'function') {
     // 兜底：若 provider 不支持具名 tool_choice，可改用 JSON mode（response_format）
     throw new Error('模型未返回 function tool_call；检查 provider 是否支持 function calling / 具名 tool_choice')

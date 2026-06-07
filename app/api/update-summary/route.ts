@@ -9,6 +9,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { ChapterReq } from '@/lib/api-schema'
 import { updateSummary } from '@/lib/pipeline/summary'
+import { checkRateLimit, clientIp } from '@/lib/llm/rate-limit'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -22,6 +23,14 @@ const ReqSchema = z.object({
 export async function POST(req: Request) {
   if (!process.env.LLM_API_KEY) {
     return NextResponse.json({ error: '服务端未配置 LLM_API_KEY' }, { status: 500 })
+  }
+
+  const rl = checkRateLimit(clientIp(req))
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: rl.error },
+      { status: rl.status, headers: rl.retryAfter ? { 'retry-after': String(rl.retryAfter) } : undefined },
+    )
   }
 
   let body: unknown

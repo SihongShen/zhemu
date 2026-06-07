@@ -4,7 +4,11 @@
  * UI 与主页统一：硬描边、硬投影、直角、Playfair 标题。
  */
 import { useRouter } from 'next/navigation'
-import { useLibraryStore, useHasHydrated, type WorkStatus } from '@/lib/store/project-store'
+import { useLibraryStore, useHasHydrated, type WorkStatus, type LengthForm } from '@/lib/store/project-store'
+import { buildDemoWork, DEMO_SAMPLES } from '@/lib/_dev/demo-work'
+
+const SAMPLE_BTN =
+  'border-2 border-foreground bg-background px-3.5 py-2 text-sm font-bold shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0'
 
 const STATUS: Record<WorkStatus, { t: string; cls: string }> = {
   draft: { t: '草稿', cls: 'border-foreground bg-muted text-muted-foreground' },
@@ -18,6 +22,7 @@ export default function WorksPage() {
   const router = useRouter()
   const hydrated = useHasHydrated()
   const createWork = useLibraryStore((s) => s.createWork)
+  const importWork = useLibraryStore((s) => s.importWork)
   const openWork = useLibraryStore((s) => s.openWork)
   const deleteWork = useLibraryStore((s) => s.deleteWork)
   const listWorks = useLibraryStore((s) => s.listWorks)
@@ -32,6 +37,14 @@ export default function WorksPage() {
     openWork(id)
     router.push('/studio')
   }
+  // 加载《雾港》某一档体量示例：已存在则直接打开，避免重复点击刷出一堆副本
+  const handleSample = async (key: LengthForm) => {
+    const sample = DEMO_SAMPLES.find((s) => s.key === key)
+    const existing = sample && works.find((w) => w.title === sample.title)
+    if (existing) openWork(existing.id)
+    else importWork(await buildDemoWork(key))
+    router.push('/studio')
+  }
 
   return (
     <div className="px-4 py-12 sm:px-6">
@@ -42,12 +55,22 @@ export default function WorksPage() {
             {works.length ? `共 ${works.length} 部 · 一折一幕，把小说折成剧本` : '从一篇小说开始吧'}
           </p>
         </div>
-        <button
-          onClick={handleCreate}
-          className="border-2 border-foreground bg-foreground px-6 py-3 font-bold text-background shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0"
-        >
-          + 上传作品
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground" title="同一个故事，三种体量——秒进编辑器对比">
+            《雾港》示例
+          </span>
+          {DEMO_SAMPLES.map((s) => (
+            <button key={s.key} onClick={() => handleSample(s.key)} className={SAMPLE_BTN}>
+              ▶ {s.label}
+            </button>
+          ))}
+          <button
+            onClick={handleCreate}
+            className="border-2 border-foreground bg-foreground px-6 py-3 font-bold text-background shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0"
+          >
+            + 上传作品
+          </button>
+        </div>
       </div>
 
       {!hydrated ? (
@@ -59,7 +82,20 @@ export default function WorksPage() {
       ) : works.length === 0 ? (
         <div className="border-2 border-dashed border-foreground bg-card px-6 py-20 text-center">
           <p className="font-heading text-2xl font-bold">空舞台</p>
-          <p className="mt-2 text-sm text-muted-foreground">点右上角「上传作品」，丢进第一篇小说。</p>
+          <p className="mt-2 text-sm text-muted-foreground">丢进第一篇小说，或先看《雾港》示例——同一个故事，三种体量。</p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+            {DEMO_SAMPLES.map((s) => (
+              <button key={s.key} onClick={() => handleSample(s.key)} className={SAMPLE_BTN}>
+                ▶ 雾港·{s.label}
+              </button>
+            ))}
+            <button
+              onClick={handleCreate}
+              className="border-2 border-foreground bg-foreground px-5 py-2.5 font-bold text-background shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5"
+            >
+              + 上传作品
+            </button>
+          </div>
         </div>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -69,6 +69,16 @@ interface LibraryState {
 
   // —— 作品库（多作品）——
   createWork: (title?: string) => string
+  /** 直接导入一部成形作品（用于「加载示例」/未来的导入功能），落一个初始快照并设为活动作品。 */
+  importWork: (data: {
+    title: string
+    novel?: string
+    bible?: Bible
+    currentYaml: string
+    settings?: Partial<WorkSettings>
+    status?: WorkStatus
+    snapshotLabel?: string
+  }) => string
   deleteWork: (id: string) => void
   openWork: (id: string) => void
   closeWork: () => void // 回到作品库
@@ -138,6 +148,37 @@ export const useLibraryStore = create<LibraryState>()(
             updatedAt: now,
           }
           set({ works: { ...works, [id]: work }, activeWorkId: id, workSeq: seq, step: 'input' })
+          return id
+        },
+
+        importWork: (data) => {
+          const { works, workSeq } = get()
+          const seq = workSeq + 1
+          const id = `work_${seq}`
+          const now = Date.now()
+          const hasYaml = !!data.currentYaml
+          const firstSnap: Snapshot = {
+            id: 'snap_1',
+            label: data.snapshotLabel ?? '初始版本',
+            origin: 'convert',
+            yaml: data.currentYaml,
+            valid: true,
+            createdAt: now,
+          }
+          const work: Work = {
+            id,
+            title: data.title?.trim() || `未命名作品 ${seq}`,
+            status: data.status ?? 'done',
+            settings: { ...DEFAULT_SETTINGS, ...data.settings },
+            novel: data.novel ?? '',
+            bible: data.bible,
+            currentYaml: data.currentYaml,
+            snapshots: hasYaml ? [firstSnap] : [],
+            seq: hasYaml ? 1 : 0,
+            createdAt: now,
+            updatedAt: now,
+          }
+          set({ works: { ...works, [id]: work }, activeWorkId: id, workSeq: seq, step: 'editor' })
           return id
         },
 
