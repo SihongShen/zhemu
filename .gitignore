@@ -34,8 +34,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local docs
-/docs
-
 # claude settings
 /.claude
+
+# 内部开发计划（不公开；公开的是 docs/ 下的产品/技术/Schema 三份设计文档）
+/docs/DAY1_PLAN.md
+/docs/DAY2_PLAN.md
+/docs/DAY3_PLAN.md
+/docs/DEVELOPMENT_PLAN.md
