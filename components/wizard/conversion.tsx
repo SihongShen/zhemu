@@ -7,7 +7,7 @@
  * @see docs/DAY3_PLAN.md · §2.C
  */
 import { useRef, useState } from 'react'
-import { useLibraryStore, useActiveWork } from '@/lib/store/project-store'
+import { useLibraryStore, useActiveWork, type WorkSettings } from '@/lib/store/project-store'
 import { segment } from '@/lib/pipeline/segment'
 import { assemble } from '@/lib/pipeline/assemble'
 import { screenplayToYaml } from '@/lib/serialize'
@@ -23,6 +23,7 @@ export function Conversion() {
   const setStatus = useLibraryStore((s) => s.setStatus)
   const setStep = useLibraryStore((s) => s.setStep)
   const snapshot = useLibraryStore((s) => s.snapshot)
+  const setConvertProgress = useLibraryStore((s) => s.setConvertProgress)
   const [done, setDone] = useState(0)
   const [total, setTotal] = useState(0)
   const [phase, setPhase] = useState<'settings' | 'running' | 'error'>('settings')
@@ -44,15 +45,19 @@ export function Conversion() {
     runningRef.current = true
     const settings = work!.settings
     const chapters = segment(work!.novel)
+    const sig = jobSig(work!.novel, chapters.length, settings)
+    // 断点续跑：仅当指纹一致（同一小说+设置）才复用上次已完成的章
+    const prior = work!.convert && work!.convert.sig === sig ? work!.convert : undefined
+    const units: Unit[] = prior ? [...prior.units] : []
+    let runningSummary = prior?.runningSummary ?? ''
+    const startIdx = units.length
     setTotal(chapters.length)
-    setDone(0)
+    setDone(startIdx)
     setPhase('running')
     setError('')
     setStatus('converting')
     try {
-      const units: Unit[] = []
-      let runningSummary = ''
-      for (let i = 0; i < chapters.length; i++) {
+      for (let i = startIdx; i < chapters.length; i++) {
         const chapter = chapters[i]
         try {
           const cData = await post('/api/convert-chapter', { chapter, bible, runningSummary, settings })
@@ -62,6 +67,8 @@ export function Conversion() {
             const sData = await post('/api/update-summary', { prevSummary: runningSummary, chapter })
             runningSummary = sData.summary
           }
+          // 落断点：本章（含其摘要）已稳；中途失败可从下一章续跑，不丢前面的成果
+          setConvertProgress({ sig, units: [...units], runningSummary })
         } catch (e) {
           throw new Error(`第 ${chapter.index} 章处理失败：${e instanceof Error ? e.message : String(e)}`)
         }
@@ -75,6 +82,7 @@ export function Conversion() {
       const { screenplay } = assemble({ bible, units, meta })
       setYaml(screenplayToYaml(screenplay))
       snapshot({ label: '转换完成 v1', origin: 'convert', valid: true })
+      setConvertProgress(undefined) // 成功 → 清断点
       setStatus('done')
       setStep('editor')
     } catch (e) {
@@ -110,6 +118,13 @@ export function Conversion() {
 
   // 转换设置：常驻可见（无设定时仅禁用「开始生成」）
   if (phase === 'settings') {
+    // 有匹配的断点 → 提示可续跑
+    const chs = work.bible ? segment(work.novel) : []
+    const resumable =
+      !!work.convert &&
+      work.convert.sig === jobSig(work.novel, chs.length, work.settings) &&
+      work.convert.units.length > 0 &&
+      work.convert.units.length < chs.length
     return (
       <ConversionSettings
         settings={work.settings}
@@ -117,6 +132,7 @@ export function Conversion() {
         canGenerate={!!work.bible}
         onGenerate={() => void run()}
         onGoImport={() => setStep('input')}
+        resume={resumable ? { done: work.convert!.units.length, total: chs.length } : undefined}
       />
     )
   }
@@ -131,6 +147,11 @@ export function Conversion() {
       onBack={() => setPhase('settings')}
     />
   )
+}
+
+/** job 指纹：小说长度 + 章数 + ②④①设置（含自由改编 brief）。变了就不复用旧断点。 */
+function jobSig(novel: string, chapterCount: number, s: WorkSettings): string {
+  return `${novel.length}:${chapterCount}:${s.lengthForm}:${s.adaptationMode}:${s.style}:${s.adaptationBrief ?? ''}`
 }
 
 async function post(url: string, body: unknown) {
