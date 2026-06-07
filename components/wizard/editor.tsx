@@ -1,8 +1,6 @@
 'use client'
 /**
  * ④ 编辑与导出：CodeMirror 改 YAML + 实时 Zod 校验 + ①制式即时切换预览 + 导出 + 版本面板。
- *
- * @see docs/DAY3_PLAN.md · §2.D
  */
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'

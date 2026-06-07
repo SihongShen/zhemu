@@ -4,7 +4,6 @@
  *
  * ⚠️ 只在服务端调用 —— API key 绝不进浏览器，不加 NEXT_PUBLIC_ 前缀。
  *
- * @see docs/DAY1_PLAN.md · §2
  * @see https://api-docs.deepseek.com/zh-cn/
  */
 import OpenAI from 'openai'

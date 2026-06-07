@@ -94,7 +94,7 @@ export const Beat = z.object({
   chapter_range: z.tuple([z.number(), z.number()]).optional(), // 覆盖的章节区间 [起, 止]，溯源用
 })
 
-/** Bible 根：Day 1 的产出目标。AI 读完小说反推出这一坨，交作者确认后供 Day 2 转换使用。 */
+/** Bible 根：AI 读完小说反推出这一坨，交作者确认后供转换使用。 */
 export const Bible = z
   .object({
     world: WorldSetting, //                  世界观（必填）
@@ -213,7 +213,7 @@ export type Meta = z.infer<typeof Meta>
 /**
  * 根：一份完整剧本 = 元信息 + Bible + 逐章单元。
  * version 锁定 schema 版本；script 是逐章转换组装出来的 Unit 数组。
- * 这是 Day 2 的最终产物，再由 js-yaml 序列化成给作者读写的 YAML。
+ * 这是转换的最终产物，再由 js-yaml 序列化成给作者读写的 YAML。
  */
 export const Screenplay = z.object({
   version: z.literal('0.1'), //             schema 版本号，演进时据此迁移

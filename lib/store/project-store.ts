@@ -2,8 +2,6 @@
  * 客户端持久化 + 作品库（前端）。单用户、无 auth。
  * 全部落 IndexedDB（不是 localStorage —— 多作品 × 多快照会撑爆 ~5MB）。
  * 一个 Work = 一部作品（原文 + 四维度设置 + currentYaml + 版本快照）。
- *
- * @see docs/DEVELOPMENT_PLAN.md · 持久化与作品库 / 版本管理 / 四个维度
  */
 import { useEffect, useState } from 'react'
 import { create } from 'zustand'
@@ -11,7 +9,7 @@ import { persist, createJSONStorage, type StateStorage } from 'zustand/middlewar
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval'
 import type { Bible, Unit } from '@/lib/schema'
 
-// ——— 四个维度（命名见 DEVELOPMENT_PLAN）———
+// ——— 四个维度 ———
 export type Style = 'cn-standard' | 'hollywood' //          ① 制式：自由，可切
 export type LengthForm = 'feature' | 'short' | 'series' //  ② 体量：烤进数据，改了要重转
 export type AdaptationMode = 'faithful' | 'balanced' | 'free' // ④ 改编自由度：烤进数据
@@ -21,7 +19,7 @@ export interface WorkSettings {
   lengthForm: LengthForm // ②
   adaptationMode: AdaptationMode // ④
   style: Style // ① 默认值，编辑器可改
-  adaptationBrief?: string // ④ 可选自定义改编要求（v2）
+  adaptationBrief?: string // ④ 可选自定义改编要求（自由档）
 }
 
 export const DEFAULT_SETTINGS: WorkSettings = {

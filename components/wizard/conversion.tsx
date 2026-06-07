@@ -3,8 +3,6 @@
  * ③ 生成剧本：先选「转换设置」（四维度，常驻可见），点开始生成 → 客户端逐章编排 + 进度条。
  * 转换/摘要走拆开的两个 API 端点；assemble/序列化在前端跑（纯函数）。已生成过不重跑。
  * UI 拆分：转换设置 → conversion-settings；进度/错误 → conversion-progress。
- *
- * @see docs/DAY3_PLAN.md · §2.C
  */
 import { useMemo, useRef, useState } from 'react'
 import { useLibraryStore, useActiveWork, type WorkSettings } from '@/lib/store/project-store'

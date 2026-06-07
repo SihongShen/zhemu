@@ -1,10 +1,8 @@
 /**
  * 抽 bible（workflow step）：读小说（+可选作者设定文档）反推世界观/人设/大纲 → 合法 Bible。
- * - 不传 bibleDoc：纯从小说正文反推（Day 1 / smoke 走这条）。
+ * - 不传 bibleDoc：纯从小说正文反推（smoke 走这条）。
  * - 传 bibleDoc：以作者设定为 grounding，冲突优先采信作者（"双向 bible"）。
  * 走 withRepair 保证 Bible.safeParse() 通过。
- *
- * @see docs/DAY1_PLAN.md · §2
  */
 import { Bible } from '@/lib/schema'
 import { callStructured } from '@/lib/llm/client'

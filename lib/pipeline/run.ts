@@ -2,10 +2,8 @@
  * 整本转换编排（测试 / 本地用）。逐章**串行**：convert → 更新摘要 → 下一章。
  * ⚠️ 串行不可并行（每章依赖上一章滚动摘要）。
  *
- * 注：生产环境 Day 3 把这个循环搬到客户端逐章请求 /api/convert-chapter，避免 serverless 超时；
+ * 注：生产环境把这个循环搬到客户端逐章请求 /api/convert-chapter，避免 serverless 超时；
  * 本 orchestrator 仅用于本地"整本跑通"验证。
- *
- * @see docs/DAY2_PLAN.md · §2
  */
 import { type Bible, type Unit, type Screenplay, type Meta } from '@/lib/schema'
 import type { WorkSettings } from '@/lib/store/project-store'

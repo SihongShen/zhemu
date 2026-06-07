@@ -1,8 +1,6 @@
 /**
  * 后端入口（薄路由层）：POST 小说（+可选设定文档）→ 抽出的 Bible。
  * 只做 IO 与边界校验，业务逻辑在 lib/pipeline。key 只在此服务端用。
- *
- * @see docs/DAY3_PLAN.md · §2.A
  */
 import { NextResponse } from 'next/server'
 import { z } from 'zod'

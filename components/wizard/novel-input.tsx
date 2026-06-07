@@ -2,8 +2,6 @@
 /**
  * ① 导入小说：两个拖拽上传区——「世界观 / 人设」（可选，作 grounding）+「小说正文」（必填）→ 抽取设定。
  * 转换设置（体量/改编自由度/制式）已移到 ③ 生成前。
- *
- * @see docs/DAY3_PLAN.md · §2.C
  */
 import { useState } from 'react'
 import { useLibraryStore, useActiveWork } from '@/lib/store/project-store'

@@ -1,8 +1,6 @@
 /**
  * 世界书装配（workflow step）：常驻（constant）+ 选择性（keyword 命中）。
  * 关键：拆成「跨章稳定」与「每章变化」两块，让 convert prompt 能吃 DeepSeek 前缀缓存。
- *
- * @see docs/DAY2_PLAN.md · §2
  */
 import type { Bible, CharacterEntry } from '@/lib/schema'
 

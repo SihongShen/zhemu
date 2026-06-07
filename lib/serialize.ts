@@ -1,8 +1,6 @@
 /**
  * Screenplay ↔ YAML 序列化。js-yaml 是面向人的形态；真源仍是 Zod。
- * Day 3 编辑器也用这两个：编辑器 onChange → fromYaml 校验。
- *
- * @see docs/DAY2_PLAN.md · §2
+ * 编辑器也用这两个：onChange → fromYaml 校验。
  */
 import { dump, load } from 'js-yaml'
 import { Screenplay } from '@/lib/schema'

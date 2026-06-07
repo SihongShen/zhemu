@@ -1,12 +1,10 @@
 /**
- * Day 2 整本转换的冒烟 / 演示端点：小说 → 合法 Screenplay → YAML + 双制式渲染。
+ * 整本转换的冒烟 / 演示端点：小说 → 合法 Screenplay → YAML + 双制式渲染。
  *
  * - **本地 dev**：实时跑整本转换（extractBible + 逐章 convert + 摘要，较慢，~分钟级）。
  * - **线上 production**：返回**预生成 mock**（demo-screenplay.json 渲染），**不触发 LLM**，
  *   避免这个公开端点被反复请求无限刷 API / 刷额度。
  * - 实时测试另走 dev（或自建私有端点），不放公开。
- *
- * @see docs/DAY2_PLAN.md · §3  /  docs/DAY3_PLAN.md · §2.B
  */
 import { NextResponse } from 'next/server'
 import { Screenplay } from '@/lib/schema'

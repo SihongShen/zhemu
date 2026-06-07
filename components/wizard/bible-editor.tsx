@@ -3,8 +3,6 @@
  * ② 确认设定：展示 AI 从小说反推的「世界观 / 人物 / 大纲」，可轻量修改后确认 → 进转换。
  * 人在环检查点。内部仍是 bible 数据，但界面不出现"Bible/故事圣经"字样。
  * 卡片已拆到 bible-cards.tsx。
- *
- * @see docs/DAY3_PLAN.md · §2.C
  */
 import { useState } from 'react'
 import { useLibraryStore, useActiveWork } from '@/lib/store/project-store'

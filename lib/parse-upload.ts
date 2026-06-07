@@ -2,8 +2,6 @@
  * 上传文件 → 小说正文。支持**多文件**（按文件名自然排序后拼接，如 第1章 → 第2章 …）。
  * .txt / .md → 直接读文本；.docx → 动态 import mammoth 抽纯文本。
  * 老式 .doc（二进制）与 PDF 不支持。
- *
- * @see docs/DAY3_PLAN.md · §2.C
  */
 export async function readNovelFiles(files: FileList | File[]): Promise<string> {
   const arr = Array.from(files).sort((a, b) =>

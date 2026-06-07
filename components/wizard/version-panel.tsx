@@ -6,8 +6,6 @@
  *  - 行内 ⇄ 选「对比基准」，再点另一版 → 两个历史快照互比。
  *  - 选中基准后，工具栏「↔ 当前编辑」→ 该基准 ↔ 当前编辑内容。
  * 对比时统一按时间排序：早的作旧侧、晚的作新侧（当前编辑内容恒为最新）。
- *
- * @see docs/DAY3_PLAN.md · §2.D
  */
 import { useState } from 'react'
 import { useLibraryStore, useActiveWork, type Snapshot } from '@/lib/store/project-store'

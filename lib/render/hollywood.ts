@@ -2,8 +2,6 @@
  * 好莱坞剧本渲染器（hollywood）。纯函数：Screenplay → 文本。
  * slug 行大写、角色名居中缩进、(V.O.)/(O.S.)、CUT TO 右对齐。
  * 招牌 demo 的一半——同一份 YAML 切到不同制式。
- *
- * @see docs/DAY3_PLAN.md · §2.B
  */
 import type { Screenplay } from '@/lib/schema'
 

@@ -1,7 +1,5 @@
 /**
  * Prompt 模板（workflow）。集中管理，稳定前缀放 system（吃前缀缓存）。
- *
- * @see docs/DAY1_PLAN.md · §2
  */
 import type { LengthForm, AdaptationMode } from '@/lib/store/project-store'
 
