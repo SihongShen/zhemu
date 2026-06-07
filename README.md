@@ -4,7 +4,9 @@
 
 **折幕**是一个把小说自动转成**结构化剧本（YAML）**的 AI 工具。核心不是"生成一段给人看的剧本文本"，而是产出一份**人能改、机器也能用的结构化剧本数据**——内容与格式分离，同一份数据可再渲染成中式 / 好莱坞等多种剧本格式，并在整本范围内保持跨章节一致性。
 
-Schema 版本 `0.1` · 详见 [剧本 YAML Schema 设计文档](docs/剧本YAML_Schema设计文档.md)
+Schema 版本 `0.1` · 详见 [剧本 YAML Schema 设计文档](docs/剧本YAML_Schema设计文档.md)  
+
+[demo视频](https://www.xiaohongshu.com/discovery/item/6a25882c0000000008024771?source=webshare&xhsshare=pc_web&xsec_token=YB1Sa4tjLXeYpx6orV4-zeqjd94pXSPZ8DgZ6ZuBnIRz0=&xsec_source=pc_share)
 
 ---
 
