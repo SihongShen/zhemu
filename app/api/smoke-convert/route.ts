@@ -10,7 +10,7 @@
  */
 import { NextResponse } from 'next/server'
 import { Screenplay } from '@/lib/schema'
-import type { LengthForm } from '@/lib/store/project-store'
+import type { LengthForm, AdaptationMode } from '@/lib/store/project-store'
 import { extractBible } from '@/lib/pipeline/extract-bible'
 import { runConversion } from '@/lib/pipeline/run'
 import { screenplayToYaml } from '@/lib/serialize'
@@ -75,20 +75,27 @@ export async function GET(req: Request) {
     return NextResponse.json(buildResponse(demoScreenplay as unknown as Screenplay, 'mock'))
   }
 
-  // 本地 dev：实时跑。可选 ?length=feature|short|series 切体量（默认 feature）。
+  // 本地 dev：实时跑。可选 ?length=feature|short|series 切体量、?mode=faithful|balanced|free 切改编自由度。
   if (!process.env.LLM_API_KEY) {
     return NextResponse.json({ ok: false, error: '未配置 LLM_API_KEY' }, { status: 500 })
   }
-  const lp = new URL(req.url).searchParams.get('length')
+  const sp = new URL(req.url).searchParams
+  const lp = sp.get('length')
+  const mp = sp.get('mode')
   const lengthForm: LengthForm = (['feature', 'short', 'series'] as const).includes(lp as never)
     ? (lp as LengthForm)
     : 'feature'
+  const adaptationMode: AdaptationMode = (['faithful', 'balanced', 'free'] as const).includes(mp as never)
+    ? (mp as AdaptationMode)
+    : 'balanced'
+  // ?brief= 仅 free 档生效（prompt 里 free 才读 brief），限 500 字
+  const adaptationBrief = sp.get('brief')?.slice(0, 500) || undefined
   try {
     const bible = await extractBible(SAMPLE_NOVEL)
     const { screenplay, yaml } = await runConversion({
       novel: SAMPLE_NOVEL,
       bible,
-      settings: { lengthForm, adaptationMode: 'balanced', style: 'cn-standard' },
+      settings: { lengthForm, adaptationMode, style: 'cn-standard', adaptationBrief },
       title: '雾港',
     })
     Screenplay.parse(screenplay)
