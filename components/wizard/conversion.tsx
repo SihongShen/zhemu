@@ -6,7 +6,7 @@
  *
  * @see docs/DAY3_PLAN.md · §2.C
  */
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useLibraryStore, useActiveWork, type WorkSettings } from '@/lib/store/project-store'
 import { segment } from '@/lib/pipeline/segment'
 import { assemble } from '@/lib/pipeline/assemble'
@@ -29,6 +29,8 @@ export function Conversion() {
   const [phase, setPhase] = useState<'settings' | 'running' | 'error'>('settings')
   const [error, setError] = useState('')
   const runningRef = useRef(false) // 同步护栏：挡住双击/重入并发跑两遍
+  // 分章只随小说/设定变化重算，避免设置页每次渲染都对整本（最多 200 万字）跑一遍正则
+  const chapters = useMemo(() => (work?.bible ? segment(work.novel) : []), [work?.novel, work?.bible])
 
   if (!work) return null
 
@@ -44,7 +46,6 @@ export function Conversion() {
     }
     runningRef.current = true
     const settings = work!.settings
-    const chapters = segment(work!.novel)
     const sig = jobSig(work!.novel, bible, settings)
     // 断点续跑：仅当指纹一致（同一小说+设置）才复用上次已完成的章
     const prior = work!.convert && work!.convert.sig === sig ? work!.convert : undefined
@@ -124,12 +125,11 @@ export function Conversion() {
 
   // 转换设置：常驻可见（无设定时仅禁用「开始生成」）
   if (phase === 'settings') {
-    // 有匹配的断点 → 提示可续跑
-    const chs = work.bible ? segment(work.novel) : []
+    // 有匹配的断点 → 提示可续跑（chapters 已 memo，不再每次渲染重算）
     const resumable =
       !!work.convert &&
       work.convert.units.length > 0 &&
-      work.convert.units.length < chs.length &&
+      work.convert.units.length < chapters.length &&
       work.convert.sig === jobSig(work.novel, work.bible, work.settings)
     return (
       <ConversionSettings
@@ -138,7 +138,7 @@ export function Conversion() {
         canGenerate={!!work.bible}
         onGenerate={() => void run()}
         onGoImport={() => setStep('input')}
-        resume={resumable ? { done: work.convert!.units.length, total: chs.length } : undefined}
+        resume={resumable ? { done: work.convert!.units.length, total: chapters.length } : undefined}
       />
     )
   }
