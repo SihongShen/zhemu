@@ -4,8 +4,10 @@
  * UI 与主页统一：硬描边、硬投影、直角、Playfair 标题。
  */
 import { useRouter } from 'next/navigation'
-import { useLibraryStore, useHasHydrated, type WorkStatus, type LengthForm } from '@/lib/store/project-store'
-import { buildDemoWork, DEMO_SAMPLES } from '@/lib/_dev/demo-work'
+import { useLibraryStore, useHasHydrated, type WorkStatus } from '@/lib/store/project-store'
+import { buildDemoWork, DEMO_SAMPLES, type DemoSample } from '@/lib/_dev/demo-work'
+
+const SAMPLE_GROUPS = ['体量', '改编'] as const
 
 const SAMPLE_BTN =
   'border-2 border-foreground bg-background px-3.5 py-2 text-sm font-bold shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0'
@@ -37,12 +39,11 @@ export default function WorksPage() {
     openWork(id)
     router.push('/studio')
   }
-  // 加载《雾港》某一档体量示例：已存在则直接打开，避免重复点击刷出一堆副本
-  const handleSample = async (key: LengthForm) => {
-    const sample = DEMO_SAMPLES.find((s) => s.key === key)
-    const existing = sample && works.find((w) => w.title === sample.title)
+  // 加载某个《雾港》示例：已存在则直接打开，避免重复点击刷出一堆副本
+  const handleSample = async (sample: DemoSample) => {
+    const existing = works.find((w) => w.title === sample.title)
     if (existing) openWork(existing.id)
-    else importWork(await buildDemoWork(key))
+    else importWork(await buildDemoWork(sample))
     router.push('/studio')
   }
 
@@ -55,22 +56,34 @@ export default function WorksPage() {
             {works.length ? `共 ${works.length} 部 · 一折一幕，把小说折成剧本` : '从一篇小说开始吧'}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2.5">
-          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground" title="同一个故事，三种体量——秒进编辑器对比">
-            《雾港》示例
-          </span>
-          {DEMO_SAMPLES.map((s) => (
-            <button key={s.key} onClick={() => handleSample(s.key)} className={SAMPLE_BTN}>
-              ▶ {s.label}
-            </button>
-          ))}
-          <button
-            onClick={handleCreate}
-            className="border-2 border-foreground bg-foreground px-6 py-3 font-bold text-background shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0"
-          >
-            + 上传作品
-          </button>
-        </div>
+        <button
+          onClick={handleCreate}
+          className="border-2 border-foreground bg-foreground px-6 py-3 font-bold text-background shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0"
+        >
+          + 上传作品
+        </button>
+      </div>
+
+      {/* 《雾港》示例：同一个故事，两个维度对比，秒进编辑器 */}
+      <div className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-2 border-foreground bg-card p-3.5 shadow-brutal">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          《雾港》示例 · 秒看
+        </span>
+        {SAMPLE_GROUPS.map((group) => (
+          <div key={group} className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-foreground">{group}</span>
+            {DEMO_SAMPLES.filter((s) => s.group === group).map((s) => (
+              <button
+                key={s.id}
+                onClick={() => handleSample(s)}
+                title={s.brief ? `自定义改编要求：${s.brief}` : undefined}
+                className={SAMPLE_BTN}
+              >
+                ▶ {s.label}
+              </button>
+            ))}
+          </div>
+        ))}
       </div>
 
       {!hydrated ? (
@@ -82,20 +95,15 @@ export default function WorksPage() {
       ) : works.length === 0 ? (
         <div className="border-2 border-dashed border-foreground bg-card px-6 py-20 text-center">
           <p className="font-heading text-2xl font-bold">空舞台</p>
-          <p className="mt-2 text-sm text-muted-foreground">丢进第一篇小说，或先看《雾港》示例——同一个故事，三种体量。</p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
-            {DEMO_SAMPLES.map((s) => (
-              <button key={s.key} onClick={() => handleSample(s.key)} className={SAMPLE_BTN}>
-                ▶ 雾港·{s.label}
-              </button>
-            ))}
-            <button
-              onClick={handleCreate}
-              className="border-2 border-foreground bg-foreground px-5 py-2.5 font-bold text-background shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5"
-            >
-              + 上传作品
-            </button>
-          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            点右上角「上传作品」丢进第一篇小说，或上方点开《雾港》示例先看产物。
+          </p>
+          <button
+            onClick={handleCreate}
+            className="mt-6 border-2 border-foreground bg-foreground px-5 py-2.5 font-bold text-background shadow-brutal transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5"
+          >
+            + 上传作品
+          </button>
         </div>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

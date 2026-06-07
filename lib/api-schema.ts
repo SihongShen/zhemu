@@ -17,5 +17,5 @@ export const SettingsReq = z.object({
   lengthForm: z.enum(['feature', 'short', 'series']),
   adaptationMode: z.enum(['faithful', 'balanced', 'free']),
   style: z.enum(['cn-standard', 'hollywood']),
-  adaptationBrief: z.string().optional(),
+  adaptationBrief: z.string().max(500).optional(),
 })

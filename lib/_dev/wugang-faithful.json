@@ -1,0 +1,1448 @@
+{
+  "version": "0.1",
+  "meta": {
+    "title": "雾港",
+    "genre": [],
+    "language": "zh",
+    "source": {
+      "chapter_count": 5
+    }
+  },
+  "bible": {
+    "world": {
+      "summary": "一座被浓雾常年笼罩的海港小镇——雾港。表面是普通渔港，底下却盘踞着走私黑市与穿制服者的共犯网络。五年前沈鸿因追查走私而被迫失踪，整座小镇用沉默守护着秘密。整体基调阴冷、潮湿、压抑，但故事内核是揭开真相、驱散迷雾的悬疑叙事。",
+      "time_period": "当代",
+      "locations": [
+        "雾港镇",
+        "码头",
+        "西湾",
+        "听潮客栈",
+        "半山腰周明家",
+        "钱记海鲜",
+        "港区西边废弃仓库",
+        "对岸渔村"
+      ],
+      "rules": [],
+      "tone": "阴冷潮湿的悬疑氛围，浓雾既是环境也是隐喻，最终雾散象征真相大白"
+    },
+    "characters": [
+      {
+        "id": "char_shenlu",
+        "name": "沈鹭",
+        "aliases": [
+          "小鹭"
+        ],
+        "role": "protagonist",
+        "description": "年轻女记者，专写别人不敢碰的案子。五年前姐姐沈鸿在雾港失踪，警方以'意外落水'结案。她不信，五年后回到雾港追查真相。性格倔强、敏锐、不达目的不罢休，与姐姐感情极深。",
+        "keywords": [
+          "沈鹭",
+          "小鹭",
+          "记者",
+          "沈鸿的妹妹",
+          "查案"
+        ],
+        "injection": "constant"
+      },
+      {
+        "id": "char_shenhong",
+        "name": "沈鸿",
+        "aliases": [
+          "姐姐",
+          "鸿"
+        ],
+        "role": "supporting",
+        "description": "沈鹭的姐姐，五年前失踪。水性极好，机灵心细，在码头发现走私线索后决定举报。失踪当晚被阿昌安排从西仓乘船逃离，被追上后泅水逃到对岸渔村，一直躲藏至今。给妹妹留下一封信，指出真正可怕的是那个穿制服、给走私望风通气的人。",
+        "keywords": [
+          "沈鸿",
+          "姐姐",
+          "鸿",
+          "失踪",
+          "举报走私",
+          "信"
+        ],
+        "injection": "selective"
+      },
+      {
+        "id": "char_achang",
+        "name": "阿昌",
+        "aliases": [
+          "阿昌叔"
+        ],
+        "role": "supporting",
+        "description": "码头修船补网的老人，看着沈家姐妹在海边长大。为走私团伙修了二十年船，睁一只眼闭一只眼换饭吃。沈鸿发现走私后，他拼命救她——在雾夜引开追船的人，让沈鸿泅水逃到对岸。替沈鸿保管了给妹妹的信整整五年，是知道真相的关键人物。",
+        "keywords": [
+          "阿昌",
+          "阿昌叔",
+          "修船",
+          "补网",
+          "老人",
+          "码头"
+        ],
+        "injection": "selective"
+      },
+      {
+        "id": "char_azhen",
+        "name": "阿珍",
+        "aliases": [
+          "阿珍姐",
+          "老板娘"
+        ],
+        "role": "supporting",
+        "description": "听潮客栈老板娘，沈家老邻居，比沈鹭大十来岁。知道沈鸿还活着，这些年一直在偷偷接济对岸渔村的沈鸿。表面劝沈鹭别翻旧账，实则是在保护她。",
+        "keywords": [
+          "阿珍",
+          "阿珍姐",
+          "老板娘",
+          "听潮客栈",
+          "客栈"
+        ],
+        "injection": "selective"
+      },
+      {
+        "id": "char_zhouming",
+        "name": "周明",
+        "aliases": [
+          "周叔"
+        ],
+        "role": "supporting",
+        "description": "退休老刑警，沈鸿失踪案的经手人。当年因快退休、妻子生病等钱用，在上头催促下草草以'意外落水'结案。知道沈鸿失踪前曾来打听举报走私的事，但未写入案卷。对沈鹭心怀愧疚，反复劝她'收手'，眼神始终躲闪——暗示他可能知道穿制服的内鬼是谁。",
+        "keywords": [
+          "周明",
+          "周叔",
+          "老刑警",
+          "退休",
+          "经手",
+          "案卷"
+        ],
+        "injection": "selective"
+      },
+      {
+        "id": "char_qiandewang",
+        "name": "钱德旺",
+        "aliases": [
+          "钱叔"
+        ],
+        "role": "minor",
+        "description": "钱记海鲜老板，沈鸿失踪当晚在他店里吃了最后一顿饭。知道沈鸿替阿昌带话去西仓的事，在账本上偷偷记了一笔。活在恐惧中，沈鹭来问时他吓得打电话通风报信，不敢说出真相。",
+        "keywords": [
+          "钱德旺",
+          "钱叔",
+          "钱记海鲜",
+          "鱼面",
+          "账本"
+        ],
+        "injection": "selective"
+      },
+      {
+        "id": "char_neigui",
+        "name": "内鬼",
+        "aliases": [
+          "穿制服的人",
+          "那个穿制服的人"
+        ],
+        "role": "antagonist",
+        "description": "尚未露面的真正反派。穿着制服、端着公家饭碗，却给码头走私团伙望风通气。沈鸿在信中明确指出此人才是真正可怕的。周明、钱德旺等人的恐惧和躲闪都与此人有关。目前身份未明。",
+        "keywords": [
+          "穿制服",
+          "内鬼",
+          "公家",
+          "望风",
+          "保护伞"
+        ],
+        "injection": "selective"
+      }
+    ],
+    "outline": [
+      {
+        "id": "beat_01",
+        "title": "归港",
+        "summary": "沈鹭五年后回到雾港，小镇依旧被浓雾笼罩。她遇到修船的阿昌叔，老人劝她别再捞沉在海底的事。在听潮客栈落脚，老板娘阿珍话里有话地警告她别翻旧账。沈鹭对着姐姐的照片发誓要找回她。",
+        "structure_tag": "setup",
+        "chapter_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "id": "beat_02",
+        "title": "旧案",
+        "summary": "沈鹭找到当年经手姐姐案子的退休刑警周明。周明承认自己没尽全力，透露沈鸿失踪前一周曾来打听如何匿名举报走私——这条线索从未写入案卷。周明劝她收手，暗示港里有人根扎得很深。",
+        "structure_tag": "rising_action",
+        "chapter_range": [
+          2,
+          2
+        ]
+      },
+      {
+        "id": "beat_03",
+        "title": "最后的晚餐",
+        "summary": "沈鹭到钱记海鲜调查姐姐失踪当晚的最后一餐。钱德旺言辞闪烁、恐惧异常。沈鹭偷翻旧账本，发现姐姐那天的记录旁有一行小字：'替阿昌带话，西仓，子时'。钱德旺发现后吓得打电话通风报信。",
+        "structure_tag": "rising_action",
+        "chapter_range": [
+          3,
+          3
+        ]
+      },
+      {
+        "id": "beat_04",
+        "title": "照片与真相",
+        "summary": "沈鹭夜探西边废弃仓库，阿昌现身，交出沈鸿五年前留给妹妹的信。信中揭示：沈鸿因追查走私被追杀，阿昌拼死救她，沈鸿泅水逃到对岸渔村躲藏至今。信中指出真正可怕的是那个穿制服、给走私望风通气的内鬼。阿昌确认沈鸿还活着，阿珍一直在接济她。",
+        "structure_tag": "climax",
+        "chapter_range": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "beat_05",
+        "title": "雾散",
+        "summary": "沈鹭得知姐姐还活着，追问内鬼身份。阿昌终于决定说出一切。沈鹭以记者的身份发誓要让见不得光的东西见光。天边泛起亮色，压了雾港五年的浓雾开始被风吹散。",
+        "structure_tag": "resolution_setup",
+        "chapter_range": [
+          5,
+          5
+        ]
+      }
+    ]
+  },
+  "script": [
+    {
+      "id": "unit_ch1",
+      "source_chapter": 1,
+      "title": "第一章 归港",
+      "summary": "沈鹭在浓雾中回到阔别五年的雾港。她走过童年熟悉的街巷，在码头找到修船老人阿昌叔，追问姐姐沈鸿失踪的真相。阿昌劝她别再捞沉在海底的旧事，沈鹭不为所动。她入住听潮客栈，老板娘阿珍暗示镇上有人不愿旧事重提。夜里，沈鹭对着与姐姐的合影立誓——一定要把姐姐找回来。",
+      "scenes": [
+        {
+          "id": "sc_1_01",
+          "heading": {
+            "int_ext": "EXT",
+            "location": "雾港镇口长途车站",
+            "time": "DUSK"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭乘长途汽车回到雾港，车站冷清，雾气弥漫。她沿记忆中的石板路走向海边，路过童年熟悉的铺子和小学，触景生情。",
+          "characters_present": [
+            "char_shenlu"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "浓雾中，一辆长途汽车缓缓停下，发动机熄火，排气管咳出一缕黑烟。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭拎着行李走下车。咸腥的雾气立刻贴上她的脸颊，她微微一激灵。"
+            },
+            {
+              "type": "action",
+              "text": "她环顾四周——天和海混成一团灰白，分不清哪里是水，哪里是天。车站只有一盏路灯亮着，灯下蹲着两个等客的三轮车夫，懒洋洋地抽烟，没人招呼她。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭把外套领子竖起来，拎着行李，沿记忆里的石板路往海边走去。"
+            },
+            {
+              "type": "action",
+              "text": "路两边的铺子大多关着门。她在一家糖水铺前停了一下——招牌还在，玻璃却碎了一块，用纸板糊着。"
+            },
+            {
+              "type": "action",
+              "text": "再往前走，是她和姐姐沈鸿读过的小学，铁门锈得发红。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭望着锈红的铁门，神情恍惚——（闪回感）放学时，姐姐沈鸿总在门口等她，一手牵着她，一手举着一支两个人分着吃的冰棍，海风把两个女孩的头发吹成一个方向。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭收回目光，继续往前走。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_1_02",
+          "heading": {
+            "int_ext": "EXT",
+            "location": "雾港码头/修船木棚",
+            "time": "DUSK"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭来到码头找到阿昌叔。老人见到她手抖得厉害，劝她别再追问旧事。沈鹭表明来意——她不信姐姐会意外落水。阿昌沉默以对。",
+          "characters_present": [
+            "char_shenlu",
+            "char_achang"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "石板路的尽头是码头。退潮了，海滩上裸露出一片黑色的礁石和搁浅的小船。修船的木棚还立在老地方，棚子里亮着一盏昏黄的灯。"
+            },
+            {
+              "type": "action",
+              "text": "一个佝偻的身影正蹲在船板边，借着灯光补网。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "阿昌叔。"
+            },
+            {
+              "type": "action",
+              "text": "老人的手停住了。他抬起头，浑浊的眼睛在雾里认了她半天，忽然手一抖，鱼线啪地落进水里。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "……是小鹭？你姐姐的事，过去这么多年了，你回来做什么。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭把行李放在船板上，在他对面蹲下。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "我想知道她到底去了哪儿。周叔他们说是意外落水。可阿昌叔，您是看着我和姐姐在这片海边长大的，您比谁都清楚——沈鸿的水性，比港里大半的渔民都好。她不可能就那么淹死。"
+            },
+            {
+              "type": "action",
+              "text": "阿昌没有接话。他重新捡起鱼线，却半天没穿进网眼里，那双手抖得厉害。"
+            },
+            {
+              "type": "action",
+              "text": "过了很久，他才把目光投向雾里看不见的海。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "有些事啊，沉到海底了，就别再捞了。捞上来的，未必是你想要的。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "我想要的，是真相。"
+            },
+            {
+              "type": "action",
+              "text": "老人摇摇头，没再说话，只是一下一下地补着那张永远补不完的网。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭知道今晚问不出什么了。她站起身，拍了拍裤子上的灰，临走前回头看了一眼——雾里，老人佝偻的背影一动不动，像一块被海水泡了太久的礁石。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_1_03",
+          "heading": {
+            "int_ext": "INT",
+            "location": "听潮客栈前台",
+            "time": "NIGHT"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭入住听潮客栈。老板娘阿珍认出她，又惊又喜，随即流露出担忧，暗示镇上有人不愿旧事重提。沈鹭敏锐追问，阿珍却慌忙岔开。",
+          "characters_present": [
+            "char_shenlu",
+            "char_azhen"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "天彻底黑下来。沈鹭走进镇口的「听潮客栈」，前台亮着暖黄的灯。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_azhen",
+              "delivery": "normal",
+              "line": "哎哟，这不是小鹭嘛！"
+            },
+            {
+              "type": "action",
+              "text": "阿珍一眼认出她，又惊又喜，随即那喜色里掺进了别的东西。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_azhen",
+              "delivery": "normal",
+              "line": "你怎么……回来了？"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "回来住几天。阿珍姐，给我开个看得见海的房间吧。"
+            },
+            {
+              "type": "action",
+              "text": "阿珍接过身份证，登记的手却慢了下来。她压低声音。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_azhen",
+              "delivery": "normal",
+              "line": "小鹭，姐多嘴一句。你姐姐那事，镇上没人愿意提。你要是来散心，姐欢迎；你要是来翻旧账……这港子小，风一吹，什么话都传到不该传的人耳朵里。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "什么人？"
+            },
+            {
+              "type": "action",
+              "text": "阿珍像是说漏了嘴，慌忙把钥匙塞给她。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_azhen",
+              "delivery": "normal",
+              "line": "二楼最里头那间。早点歇着，海边夜里凉。"
+            },
+            {
+              "type": "action",
+              "text": "说完便低头忙别的去了，再不肯多看她一眼。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_1_04",
+          "heading": {
+            "int_ext": "INT",
+            "location": "听潮客栈二楼房间",
+            "time": "NIGHT"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭在房间里摆出与姐姐的合影，对着照片轻声立誓——这次一定要把姐姐找回来。窗外雾海沉沉。",
+          "characters_present": [
+            "char_shenlu"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "房间不大，一床一桌，窗外就是漆黑的海。沈鹭把行李里一张照片取出来，摆在桌上。"
+            },
+            {
+              "type": "action",
+              "text": "照片里两个女孩并肩站在码头，小的那个咧着嘴笑，大的那个揽着妹妹的肩，眼睛却望着远处的海平线，像在想什么心事。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "姐，我回来了。这次，我一定把你找回来。"
+            },
+            {
+              "type": "action",
+              "text": "窗外，雾压着海，海托着雾，一夜都没有散。"
+            }
+          ],
+          "needs_review": false
+        }
+      ]
+    },
+    {
+      "id": "unit_ch2",
+      "source_chapter": 2,
+      "title": "第二章 旧案",
+      "summary": "沈鹭找到当年经手姐姐失踪案的老刑警周明。周明承认自己因快退休、妻子生病等钱用，在上头催促下草草以「意外落水」结案，未尽全力。沈鹭追问出关键线索：沈鸿失踪前一周曾去派出所打听如何匿名举报走私，但这条信息从未被写入案卷。周明反复劝沈鹭收手，暗示镇上盘根错节的势力仍在。沈鹭坚定表示不会放弃，转身走入雾中。",
+      "scenes": [
+        {
+          "id": "sc_2_01",
+          "heading": {
+            "int_ext": "EXT",
+            "location": "半山腰周明家院子",
+            "time": "DAY"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭来到半山腰周明家，周明正在浇花，见到她后神色复杂，请她进屋。",
+          "characters_present": [
+            "char_shenlu",
+            "char_zhouming"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "周明的家在半山腰，一栋孤零零的旧砖房。院子里横七竖八晾着渔网，墙上挂着一张褪了色的警队合影，玻璃相框落满灰。周明背对着门，正给几盆半死不活的兰花浇水。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "周叔。"
+            },
+            {
+              "type": "action",
+              "text": "浇水的手顿了顿。周明转过身，比五年前老了不止五岁——背驼了，头发也白透了。他看着沈鹭，浑浊的眼里闪过一丝复杂的东西：有意外，有躲闪，还有一点说不清的愧。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "……进来吧。"
+            },
+            {
+              "type": "action",
+              "text": "他叹了口气。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "我就知道，你迟早会找上门。"
+            },
+            {
+              "type": "transition",
+              "text": "切至 屋内"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_2_02",
+          "heading": {
+            "int_ext": "INT",
+            "location": "半山腰周明家客厅",
+            "time": "DAY"
+          },
+          "mode": "normal",
+          "synopsis": "周明向沈鹭讲述沈鸿案始末，承认自己当年没尽全力。沈鹭追问出姐姐失踪前曾打听举报走私的事，案卷中却只字未提。",
+          "characters_present": [
+            "char_shenlu",
+            "char_zhouming"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "屋里陈设简单，一张八仙桌，几把旧椅子。周明给沈鹭倒了杯粗茶，端杯子的手有点抖，茶水洒了几滴在桌上。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "沈鸿的案子，是我经手的。"
+            },
+            {
+              "type": "action",
+              "text": "他在她对面坐下，目光落在自己布满老年斑的手背上。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "那年她在钱记海鲜吃完晚饭，一个人往码头方向走，再没回来。第三天，西湾的渔民捞起一只女鞋，是她的。我们查了半个月，最后定了意外落水。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "半个月。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭重复了一遍这三个字，声音很轻，却像针。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "周叔，您当了一辈子刑警，破过那么多案子。我问您一句良心话——这个结论，您自己信吗？"
+            },
+            {
+              "type": "action",
+              "text": "周明没有立刻回答。他端起茶杯，又放下，喉结动了动。屋外的风穿过院子里的渔网，发出呜呜的声响，像谁在低声哭。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "那阵子，港里不太平。"
+            },
+            {
+              "type": "action",
+              "text": "他终于开口，声音压得很低。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "走私的、跑黑市的，半夜里船来船往，水浑得很。上头三天两头催着结案，说一个失踪案拖着影响渔汛、影响招商。我……我那时候快退休了，老婆又病着，等着用钱。"
+            },
+            {
+              "type": "action",
+              "text": "他闭上眼。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "我承认，那个案子，我没尽全力。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭的心一点点沉下去，可她还是逼着自己问下去。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "姐姐出事前，有没有什么反常？她有没有找过您，或者找过谁？"
+            },
+            {
+              "type": "action",
+              "text": "周明的身子几不可察地僵了一下。他沉默了很久，久到沈鹭以为他不会答了。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "出事前大概一个星期，沈鸿来过一趟所里。她说……她想问问，举报走私，该找哪个部门，怎么才能不被人知道是她报的。"
+            },
+            {
+              "type": "action",
+              "text": "老人的声音抖了起来。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "我当时只当她是好奇，随口应付了她几句。我要是当时多问一句，多留个心……"
+            },
+            {
+              "type": "action",
+              "text": "他没说下去，一只手捂住了脸。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭的呼吸急了。姐姐失踪前一周，去打听过怎么举报走私——这条线索，案卷里一个字都没有。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "这些，为什么不写进案卷？"
+            },
+            {
+              "type": "action",
+              "text": "周明放下手，眼神又恢复了那种躲闪的浑浊。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_zhouming",
+              "delivery": "normal",
+              "line": "小鹭，听叔一句劝。这港子小，认人。有些人，你现在看着是退了、老了、不管事了，可他们的根还扎在这片水底下，盘根错节。你一个姑娘家，查到一半最难收手——到时候，怕是连你自己都搭进去。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "那也比让我姐姐烂在一只鞋里强。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭站起身，声音不高，却字字咬得很死。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "周叔，谢谢您今天肯跟我说这些。我姐不是会半路放弃的人。"
+            },
+            {
+              "type": "action",
+              "text": "她在门口停下，回头。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "我也不是。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_2_03",
+          "heading": {
+            "int_ext": "EXT",
+            "location": "半山腰周明家院子外",
+            "time": "DAY"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭离开周明家，雾又起来了。她回头望见周明佝偻的背影，像一尊被岁月和悔恨压垮的旧神像。",
+          "characters_present": [
+            "char_shenlu",
+            "char_zhouming"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "沈鹭走出院子。雾又起来了，灰白的海雾从山下漫上来，缠绕着旧砖房。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭回头望了一眼。透过半掩的门，周明还坐在那张八仙桌前，背影佝偻，一动不动，像一尊被岁月和悔恨压垮的旧神像。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭收回目光，转身走入雾中。"
+            }
+          ],
+          "needs_review": false
+        }
+      ]
+    },
+    {
+      "id": "unit_ch3",
+      "source_chapter": 3,
+      "title": "第三章 最后的晚餐",
+      "summary": "沈鹭来到钱记海鲜，钱德旺强装热情却处处露怯。沈鹭点了一碗和姐姐当年一样的鱼面，追问沈鸿失踪当晚的情况。钱德旺支吾搪塞，躲进后厨偷偷打电话通风报信。沈鹭趁隙翻出五年前的旧账本，在姐姐失踪当天的流水记录旁发现一行小字：「替阿昌带话，西仓，子时」——原来姐姐那晚是去赴约。钱德旺撞见后惊恐万分，沈鹭逼问姐姐替阿昌带了什么话，钱德旺吓得浑身发抖却不敢开口。沈鹭终于明白，钱德旺活在某个看不见的人的阴影下，和她一样。",
+      "scenes": [
+        {
+          "id": "sc_3_01",
+          "heading": {
+            "int_ext": "INT",
+            "location": "钱记海鲜",
+            "time": "DAY"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭走进钱记海鲜，钱德旺认出她后强装热情，沈鹭点了一碗和姐姐当年一样的鱼面，并追问姐姐失踪当晚的情况。",
+          "characters_present": [
+            "char_shenlu",
+            "char_qiandewang"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "钱记海鲜的店面陈旧破败，鎏金招牌上的红漆大片剥落，露出底下灰白的木头。店内只有零星两桌客人，电视开着，没人看。"
+            },
+            {
+              "type": "action",
+              "text": "钱德旺挺着撑起围裙的肚子在店里忙活。门被推开，他抬头瞥见沈鹭，脸上的笑僵了一瞬，随即堆起过于饱满的笑容迎上去。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "哎哟，这是……小鹭吧？沈鸿的妹妹！"
+            },
+            {
+              "type": "action",
+              "text": "他肥厚的手在油腻的围裙上反复擦拭。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "长这么大了，出息了，听说在大城市当记者呢。坐坐坐，今天叔请，想吃什么尽管点。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "钱叔客气了。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭在靠柜台的位子坐下，目光不动声色地扫过那张油亮的柜台。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "就一碗鱼面吧，跟我姐当年点的一样。"
+            },
+            {
+              "type": "action",
+              "text": "钱德旺脸上的笑几不可察地抽了一下。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "……行，鱼面，马上。"
+            },
+            {
+              "type": "action",
+              "text": "他转身要走，沈鹭开口留住他。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "钱叔，我想问问，我姐失踪那天晚上，是在您这儿吃的最后一顿饭，对吧？"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "是、是有这么回事。"
+            },
+            {
+              "type": "action",
+              "text": "钱德旺的眼神开始飘忽。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "那天她一个人来的，点了碗鱼面，吃完就走了，没什么特别的。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "她走的时候，是几点？有没有跟店里谁说过话？或者，有没有人在外头等她？"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "这……"
+            },
+            {
+              "type": "action",
+              "text": "钱德旺额头沁出一层细汗，飞快地朝门外瞟了一眼，又迅速收回目光。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "姑娘啊，五年前的事了，店里天天人来人往，谁记得清那么细。你别多想，啊，她就是吃完饭走的，普普通通一顿饭。"
+            },
+            {
+              "type": "action",
+              "text": "他几乎是落荒而逃地钻进后厨。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "我去给你下面！"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭垂下眼，端起桌上的茶慢慢喝。后厨传来锅碗瓢盆的响动，夹杂着钱德旺压着嗓子打电话的声音，断续飘来几个字——「……她妹妹回来了……我什么都没说……你们看着办……」"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭的心猛地一紧。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_3_02",
+          "heading": {
+            "int_ext": "INT",
+            "location": "钱记海鲜·柜台后",
+            "time": "CONTINUOUS"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭趁钱德旺在后厨，翻出五年前的旧账本，发现姐姐失踪当晚的流水记录旁有一行小字：替阿昌带话，西仓，子时。钱德旺端面出来撞见，惊恐万分。",
+          "characters_present": [
+            "char_shenlu",
+            "char_qiandewang"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "趁钱德旺还在后厨忙活，沈鹭起身，装作去看墙上的菜牌，悄悄绕到柜台后。柜台下层堆着几本落满灰的旧账本，按年份码着。"
+            },
+            {
+              "type": "action",
+              "text": "她屏住呼吸，飞快抽出五年前那一本，借着昏暗的灯光一页页翻过去，翻到姐姐失踪的那个月。手指停住了。"
+            },
+            {
+              "type": "action",
+              "text": "那一天的流水记录里，「沈鸿 鱼面 一碗」的字样旁边，有人用极小极潦草的字迹补了一行：替阿昌带话，西仓，子时。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭的心跳漏了一拍，又狂跳起来。原来那天晚上，姐姐根本不是「吃完饭就走」——她是去赴一个约。一个跟阿昌、跟西边的仓库、跟午夜有关的约。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_qiandewang",
+              "delivery": "normal",
+              "line": "你在那儿干什么！"
+            },
+            {
+              "type": "action",
+              "text": "钱德旺端着面从后厨冲出来，看见柜台后的她，脸瞬间白了。沈鹭不动声色地合上账本塞回原处，若无其事地直起身。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "看您这账记得真仔细。"
+            },
+            {
+              "type": "action",
+              "text": "她笑了笑，目光却像刀。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "钱叔，我姐到底替阿昌叔，去西仓带了什么话？"
+            },
+            {
+              "type": "action",
+              "text": "钱德旺端面的手剧烈地抖起来，滚烫的汤汁溅出来，烫得他都没察觉。他张了张嘴，喉咙里却像被什么堵住，半个字也吐不出，只有满眼藏不住的、活生生的恐惧。"
+            },
+            {
+              "type": "action",
+              "text": "那一刻沈鹭忽然明白——钱德旺不是不记得，是不敢说。他和她一样，活在某个看不见的人的阴影底下。"
+            }
+          ],
+          "needs_review": false
+        }
+      ]
+    },
+    {
+      "id": "unit_ch4",
+      "source_chapter": 4,
+      "title": "第四章 照片",
+      "summary": "沈鹭夜探西仓，阿珍阻拦未果。在西仓最深处，阿昌现身，递出与沈鸿的旧照，坦白自己替走私团伙修船二十年、沈鸿发现走私后执意举报、他安排沈鸿从西仓乘船逃离的经过。船至海中央被探照灯追上，阿昌引开追船的人，沈鸿泅水逃向对岸。阿昌将沈鸿留给妹妹的信保管了五年，终于交给沈鹭。信中沈鸿指出真正可怕的是那个穿制服、给走私望风通气的人。",
+      "scenes": [
+        {
+          "id": "sc_4_01",
+          "heading": {
+            "int_ext": "INT",
+            "location": "听潮客栈前厅",
+            "time": "NIGHT"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭借手电，阿珍阻拦未果，沈鹭点破阿珍早知姐姐当晚去了西仓。",
+          "characters_present": [
+            "char_shenlu",
+            "char_azhen"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "夜雾浓得能拧出水来，客栈门口那盏灯只剩一团模糊的光晕。沈鹭从楼梯下来，走向柜台。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "阿珍姐，手电借我用一下。"
+            },
+            {
+              "type": "action",
+              "text": "阿珍正擦着杯子，闻言抬头，脸在灯下绷得很紧。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_azhen",
+              "delivery": "normal",
+              "line": "这么晚了你去哪儿？西边那片荒仓库，白天都没人去，夜里更邪门。小鹭，听姐的，别去。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭没有接话，只是看着阿珍的眼睛。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "阿珍姐，我姐失踪那晚，去的就是那里。您是不是早就知道？"
+            },
+            {
+              "type": "action",
+              "text": "阿珍的嘴唇动了动，最终什么也没说。她别开脸，从柜台下摸出手电，搁在台面上，声音发闷。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_azhen",
+              "delivery": "normal",
+              "line": "……手电拿好，潮水涨上来之前回来。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭拿起手电，推门走入浓雾中。阿珍站在原地，望着她消失的方向，手指无意识地攥紧了抹布。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_4_02",
+          "heading": {
+            "int_ext": "EXT",
+            "location": "港区西边废弃仓库外",
+            "time": "NIGHT"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭穿过浓雾中的废弃仓库区，找到最尽头那间虚掩着门的仓库。",
+          "characters_present": [
+            "char_shenlu"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "港区西边，一排废弃多年的旧仓库在浓雾中若隐若现。墙皮剥落，门窗洞开，像一具具被掏空的躯壳。海浪在不远处一下一下拍着堤岸，声音空洞而单调。沈鹭打着手电，数着门牌，脚踩在碎石上发出细碎的声响。她在最尽头那间停下——铁门虚掩着，门缝里漏出一丝若有若无的霉味和海腥。"
+            },
+            {
+              "type": "action",
+              "text": "她深吸一口气，伸手推开了门。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_4_03",
+          "heading": {
+            "int_ext": "INT",
+            "location": "港区西边废弃仓库内部",
+            "time": "NIGHT"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭进入仓库发现走私木箱，阿昌从黑暗中现身，递出与沈鸿的旧照，坦白一切。",
+          "characters_present": [
+            "char_shenlu",
+            "char_achang"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "手电的光柱刺进黑暗，扫过满地尘土。仓库深处，一摞木箱码得整整齐齐，箱身上贴着的封条早已发脆、卷边，却没有任何报关的标记。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "O.S.",
+              "line": "我就知道，你迟早会来这儿。"
+            },
+            {
+              "type": "action",
+              "text": "苍老的声音从黑暗深处响起。沈鹭的心提到嗓子眼，手电猛地转过去——阿昌从那摞木箱后面缓缓走出来，手里攥着一张照片，边角被他捏得发皱。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "阿昌叔……"
+            },
+            {
+              "type": "action",
+              "text": "阿昌走近几步，把那张照片递到手电光下。照片里，年轻些的他与扎着马尾的沈鸿并肩站在一条渔船前，两个人都笑着，身后是晴朗的、没有雾的海。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "你跟你姐姐，一个模子刻出来的。一样的犟，一样的，认准了一条道就不回头。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭的眼眶一下子热了，可她强迫自己稳住声音。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "那天晚上，到底发生了什么。您告诉我。"
+            },
+            {
+              "type": "action",
+              "text": "阿昌长长地叹了一口气，像是要把背了五年的东西一口气卸下来。他缓缓坐到一只木箱上，伸手拍了拍冰冷的箱盖。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "这些箱子里的货，从来没经过海关。半夜进港，半夜出港，走的是不见光的水路。我一个修船的老头子，给他们看了二十年的船，睁一只眼闭一只眼，换口饭吃。"
+            },
+            {
+              "type": "action",
+              "text": "他的声音哑了。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "你姐姐沈鸿，那年常来码头找我闲坐。她机灵，心细，没几回就看出不对劲了。她查到了这些货，查到了背后是什么人。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "她要去报案。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭的喉咙发紧。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "我拦不住她。我跟她说，这水太深，深得能把人骨头都化了，里头有穿制服的人撑着。可她不听，她说，姑姑那年也是这么不明不白没的，她不能再装看不见。"
+            },
+            {
+              "type": "action",
+              "text": "老人的手攥成了拳。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "我没办法，只能想着，先把她送出港去，越远越好，躲过这阵风头再说。那天子时，我让她到这西仓来，我备了条船。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "然后呢？她上船了吗？"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭几乎是屏着呼吸问。阿昌睁开眼，那目光穿过她，望向门外浓得化不开的雾，仿佛又回到了五年前那个一模一样的雾夜。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "船划到海中央，后头的探照灯就追上来了。那天的雾，跟今天一样大……"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_4_04",
+          "heading": {
+            "int_ext": "INT",
+            "location": "港区西边废弃仓库内部",
+            "time": "NIGHT"
+          },
+          "mode": "flashback",
+          "synopsis": "阿昌讲述五年前雾夜海上追逃：他引开追船，沈鸿泅水逃向对岸。",
+          "characters_present": [
+            "char_achang",
+            "char_shenhong"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "五年前。浓雾锁住海面，伸手不见五指。一条小渔船在海中央颠簸，船头一盏油灯摇摇欲灭。阿昌奋力划桨，沈鸿蹲在船尾，紧抓着船舷，回头望向雾中越来越近的两道白光——那是追船的探照灯。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "V.O.",
+              "line": "追上来的是两艘快艇，探照灯把雾都打穿了。我知道跑不掉了。"
+            },
+            {
+              "type": "action",
+              "text": "阿昌猛地将船桨一横，把船头调转方向。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "鸿啊，你水性好，从这里到对岸渔村，不到两里。你下水，我往另一边划，把他们的灯引开。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "normal",
+              "line": "阿昌叔，那你——"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "别管我！我一个老头子，他们能拿我怎样？你活着，才有以后！"
+            },
+            {
+              "type": "action",
+              "text": "沈鸿咬了咬嘴唇，脱下外套，无声地滑入冰冷的海水中。阿昌看着她消失在黑暗的海面，随即猛力划桨，故意让油灯的光在雾中晃动，朝相反方向驶去。两道探照灯的光柱追着那一点摇晃的灯火，越追越远。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "V.O.",
+              "line": "我把船往礁石那边划，他们的灯跟着我走。你姐姐……她水性是真的好，那么冷的水，那么大的雾，她硬是泅过去了。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_4_05",
+          "heading": {
+            "int_ext": "INT",
+            "location": "港区西边废弃仓库内部",
+            "time": "NIGHT"
+          },
+          "mode": "normal",
+          "synopsis": "回到现在。阿昌告诉沈鹭：沈鸿还活着，在对岸渔村躲了五年。他交出沈鸿留给妹妹的信。",
+          "characters_present": [
+            "char_shenlu",
+            "char_achang"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "手电的光柱微微晃动。沈鹭的眼泪终于滑下来，但她没有出声。阿昌从怀里摸出一个牛皮纸信封，信封已经泛黄，边角磨损，但封口完好。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "她活着。在对岸渔村，躲了五年。这封信，她托我保管，说总有一天你会来。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭接过信，手指颤抖。信封上写着：『小鹭亲启』——是姐姐沈鸿的笔迹。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "你姐姐在信里写了什么，我没看过。但她跟我说过一句话——她说，阿昌叔，真正可怕的不是那些走私的，是那个穿制服的。他给走私望风，给走私通气，端着公家的饭碗，干的是要人命的勾当。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭抬起头，手电的光照在阿昌苍老的脸上，皱纹里全是泪痕。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "这五年，我每天晚上都梦见那天的雾。我修了二十年船，替他们遮了二十年，到头来，差点把老沈家的闺女也搭进去。"
+            },
+            {
+              "type": "action",
+              "text": "他站起来，背对着沈鹭，肩膀微微发抖。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "信你拿着。去不去找她，你自己定。但小鹭——那个人，还在这镇上。你姐姐躲了五年，就是因为他还在。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭将信紧紧攥在胸口。手电的光柱中，尘埃缓缓飘落。"
+            }
+          ],
+          "needs_review": false
+        },
+        {
+          "id": "sc_4_06",
+          "heading": {
+            "int_ext": "EXT",
+            "location": "港区西边废弃仓库外/海边堤岸",
+            "time": "NIGHT"
+          },
+          "mode": "normal",
+          "synopsis": "沈鹭走出仓库，在堤岸边拆开姐姐的信。信中沈鸿指出内鬼是穿制服的人，并告诉妹妹自己还活着。",
+          "characters_present": [
+            "char_shenlu"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "沈鹭走出仓库。雾依然浓，但海面上似乎透出一丝极淡的月光。她走到堤岸边，在一块被海水冲刷得光滑的石头上坐下，借着手电的光，拆开了信封。"
+            },
+            {
+              "type": "action",
+              "text": "信纸已经泛黄，折痕处几乎要断裂。沈鸿的字迹清秀而有力。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "V.O.",
+              "line": "小鹭，如果你读到这封信，说明你已经长大了，也说明你跟我一样犟，一样不肯认命。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭的眼泪滴在信纸上，她赶紧用手背擦掉，生怕模糊了字迹。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "V.O.",
+              "line": "我不知道这封信什么时候能到你手里。阿昌叔说他会替我保管，我相信他。小鹭，我还活着。但你不要急着来找我——这个镇上，有一个人，穿着制服，端着公家饭碗，却给走私的人望风通气。我查到了货，查到了船，但真正让我害怕的，是他。他藏在暗处，什么都知道，什么都看得见。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭攥紧了信纸。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "V.O.",
+              "line": "姑姑当年的事，我一直在查。她不是意外，她也是因为看到了不该看的东西。小鹭，你要小心。等雾散了，我会回来。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭将信贴在胸口，抬头望向浓雾笼罩的海面。海的那一边，是对岸渔村的方向。雾中，似乎有一点极微弱的灯火，若隐若现。"
+            },
+            {
+              "type": "action",
+              "text": "她站起来，手电的光刺向雾中。潮水正在上涨，拍打着堤岸，一声接一声。"
+            }
+          ],
+          "needs_review": false
+        }
+      ]
+    },
+    {
+      "id": "unit_ch5",
+      "source_chapter": 5,
+      "title": "第五章 雾散",
+      "summary": "阿昌将沈鸿五年前留下的信交给沈鹭。信中沈鸿说明阿昌救她的经过，并指出真正可怕的是那个穿制服的内鬼。沈鹭得知姐姐还活着，在对岸渔村被阿珍接济。她追问内鬼身份，阿昌终于决定说出真相。铁门外海平线泛起天光，浓雾开始被风吹散。",
+      "scenes": [
+        {
+          "id": "sc_5_01",
+          "heading": {
+            "int_ext": "INT",
+            "location": "港区西边废弃仓库最尽头铁门内",
+            "time": "NIGHT"
+          },
+          "mode": "normal",
+          "synopsis": "阿昌沉默许久后，从怀里掏出沈鸿五年前留给沈鹭的信。沈鹭借手电光读信，得知姐姐还活着，以及内鬼的存在。",
+          "characters_present": [
+            "char_shenlu",
+            "char_achang"
+          ],
+          "elements": [
+            {
+              "type": "action",
+              "text": "沉默在仓库里压了很久。只有海浪一下一下拍着堤岸，节奏沉闷而固执。沈鹭的心一寸寸往下沉，嘴唇微微翕动，却不敢问出那句她最怕听到答案的话。"
+            },
+            {
+              "type": "action",
+              "text": "阿昌忽然动了。他伸手探进怀里，摸索了半天，掏出一封信。信封已经泛黄发软，边角磨得起了毛，显然被人贴身藏了很久很久。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "这是她留给你的。"
+            },
+            {
+              "type": "action",
+              "text": "老人的手抖得厉害，把信递过来。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "她说，要是有一天你回雾港来找她，就把这个交给你。我替她，藏了整整五年。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭的手也抖了。她借着手电的光，小心翼翼地拆开信封，抽出那张同样泛黄的信纸。手电光打在纸上，字迹映入眼帘——是姐姐的字迹，熟悉得让她眼睛发酸。"
+            },
+            {
+              "type": "shot",
+              "text": "特写：信纸上沈鸿清秀而有力的字迹。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "V.O.",
+              "line": "小鹭：如果你看到这封信，说明姐姐一时半会儿还回不来，你别怕，也别哭。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "V.O.",
+              "line": "千万别恨阿昌叔。是他拼了命，才把我从那伙人手里捞出来。那天晚上船被追上，他把我推下水，让我泅到对岸去，自己掉头把船开向相反的方向，替我引开了他们。他这条命，有半条是为我搭进去的。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭抬起头看了阿昌一眼，泪水在眼眶里打转。阿昌别过脸去，喉结上下滚动。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "V.O.",
+              "line": "我现在躲在一个安全的地方，不能告诉你在哪儿，怕连累你。等这阵风过去，等那些人露出马脚，我一定回来找你。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "V.O.",
+              "line": "还有一件事你要记住：动我的，不只是码头上那些跑货的。真正可怕的，是那个穿着制服、端着公家饭碗、却给他们望风通气的人。你查这件事的时候，谁劝你回头，谁的眼神躲着你，你就多留个心。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenhong",
+              "delivery": "V.O.",
+              "line": "照顾好自己。等姐姐回家。——鸿"
+            },
+            {
+              "type": "action",
+              "text": "手电光下，沈鹭的泪水终于决堤。她猛地抬起头，声音哽得不成调。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "她……还活着？姐姐她，还活着？"
+            },
+            {
+              "type": "action",
+              "text": "阿昌重重地点头，浑浊的眼里也滚出泪来。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "活着。就在对岸的渔村，阿珍这些年，一直在偷偷接济她。这港子里，知道她还活着的，只有我、阿珍，还有……还有一个，至今不敢露面的人。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭脑子里轰的一声。她想起半山小屋里周明那双始终躲着她的眼睛，想起他那句反复的「认人」「收手」；想起钱德旺在后厨压着嗓子打的那个电话，想起他满眼藏不住的恐惧；想起阿珍拦她时绷紧的脸。"
+            },
+            {
+              "type": "action",
+              "text": "原来这五年，整座雾港都在用沉默，替她姐姐守着一个秘密——也替那个穿制服的人，捂着一桩罪。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_shenlu",
+              "delivery": "normal",
+              "line": "那个人是谁？阿昌叔，告诉我他是谁。我有办法，让见不得光的东西，见光。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭擦掉眼泪，声音里第一次有了记者的锋利。阿昌看着她，看了很久。那张被海风刻满皱纹的脸上，恐惧一点一点退去，浮起一种近乎释然的、托付般的神情。"
+            },
+            {
+              "type": "dialogue",
+              "character": "char_achang",
+              "delivery": "normal",
+              "line": "好。我等这一天，等了五年。"
+            },
+            {
+              "type": "action",
+              "text": "铁门外，不知什么时候，海平线上泛起了一线灰白。风从海上吹来，带着潮湿的、却终于流动起来的气息。那压了雾港五年、化不开的浓雾，正被这风一点一点地撕开、吹散。"
+            },
+            {
+              "type": "action",
+              "text": "沈鹭把姐姐的信紧紧贴在胸口，走到仓库门口。她望着那一线渐渐放亮的天光，第一次觉得，这座从小到大都让她觉得阴冷潮湿的港口，似乎没有那么冷了。"
+            },
+            {
+              "type": "action",
+              "text": "雾在散。天，要亮了。"
+            }
+          ],
+          "needs_review": false
+        }
+      ]
+    }
+  ]
+}
