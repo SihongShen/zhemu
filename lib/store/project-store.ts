@@ -209,13 +209,14 @@ export const useLibraryStore = create<LibraryState>()(
         listWorks: () => Object.values(get().works).sort((a, b) => b.updatedAt - a.updatedAt),
 
         setStep: (step) => set({ step }),
-        setNovel: (novel) => mutateActive((w) => ({ ...w, novel })),
+        // 改动小说/设定/设置都会让旧转换断点失效 → 顺手清掉，避免脏断点长期滞留
+        setNovel: (novel) => mutateActive((w) => ({ ...w, novel, convert: undefined })),
         setBibleDoc: (bibleDoc) => mutateActive((w) => ({ ...w, bibleDoc })),
-        setBible: (bible) => mutateActive((w) => ({ ...w, bible })),
+        setBible: (bible) => mutateActive((w) => ({ ...w, bible, convert: undefined })),
         setYaml: (currentYaml) => mutateActive((w) => ({ ...w, currentYaml })),
         setStatus: (status) => mutateActive((w) => ({ ...w, status })),
         updateSettings: (patch) =>
-          mutateActive((w) => ({ ...w, settings: { ...w.settings, ...patch } })),
+          mutateActive((w) => ({ ...w, settings: { ...w.settings, ...patch }, convert: undefined })),
 
         setConvertProgress: (convert) => mutateActive((w) => ({ ...w, convert })),
 

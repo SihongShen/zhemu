@@ -8,7 +8,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { extractBible } from '@/lib/pipeline/extract-bible'
 import { checkRateLimit, clientIp } from '@/lib/llm/rate-limit'
-import { NOVEL_MAX, BIBLE_DOC_MAX } from '@/lib/api-schema'
+import { NOVEL_MAX, BIBLE_DOC_MAX, firstFriendlyError } from '@/lib/api-schema'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
   const parsed = ReqSchema.safeParse(body)
   if (!parsed.success) {
     return NextResponse.json(
-      { error: parsed.error.issues[0]?.message ?? '参数校验失败', issues: parsed.error.issues },
+      { error: firstFriendlyError(parsed.error), issues: parsed.error.issues },
       { status: 400 },
     )
   }

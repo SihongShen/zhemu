@@ -5,6 +5,15 @@
  */
 import { z } from 'zod'
 
+/**
+ * 取一条对用户有用的校验错误：只回显长度类（too_big/too_small）的自定义中文消息，
+ * 其它（如 bible 字段类型错误）一律回通用文案，避免把生硬的英文 Zod 报错直接抛给用户。
+ */
+export function firstFriendlyError(err: z.ZodError): string {
+  const issue = err.issues.find((i) => i.code === 'too_big' || i.code === 'too_small')
+  return issue?.message ?? '参数校验失败'
+}
+
 // 输入长度上限（客户端与服务端共用，避免漂移）。设得很宽松：只挡 MB 级滥用，不卡正常内容。
 export const TITLE_MAX = 200
 export const CHAPTER_TEXT_MAX = 200_000 // 单章 ~20 万字；再大单次 LLM 也吃不下，应由用户拆分

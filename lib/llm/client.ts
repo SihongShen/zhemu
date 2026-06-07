@@ -103,13 +103,12 @@ export async function callStructured(args: StructuredCall): Promise<string> {
     )
     console.log(`[llm:${args.toolName}] args尾部120: ${JSON.stringify(tail)}`)
   }
-  // 截断兜底：仅当 finish_reason=length **且工具入参确实无法解析**时才判定为截断
-  // （避免恰好顶到上限但入参完整的响应被误杀——某些 OpenAI 兼容端点会这样报 length）
-  if (choice?.finish_reason === 'length') {
-    const rawArgs = call?.type === 'function' ? call.function.arguments : ''
+  // 截断兜底：仅当**有工具调用、finish_reason=length 且入参无法解析**时才判定为截断
+  // （入参完整的"恰好顶格"不误杀；完全没有 tool_call 的留给下面的更准确报错）
+  if (call?.type === 'function' && choice?.finish_reason === 'length') {
     let parseable = false
     try {
-      JSON.parse(rawArgs)
+      JSON.parse(call.function.arguments)
       parseable = true
     } catch {
       /* 残缺 JSON → 确认是截断 */

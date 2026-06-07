@@ -11,7 +11,7 @@ import { useLibraryStore, useActiveWork, type WorkSettings } from '@/lib/store/p
 import { segment } from '@/lib/pipeline/segment'
 import { assemble } from '@/lib/pipeline/assemble'
 import { screenplayToYaml } from '@/lib/serialize'
-import type { Unit } from '@/lib/schema'
+import type { Unit, Bible } from '@/lib/schema'
 import { BTN_PRIMARY, BTN_GHOST } from '@/components/brutal-ui'
 import { ConversionSettings } from './conversion-settings'
 import { ConversionProgress } from './conversion-progress'
@@ -45,7 +45,7 @@ export function Conversion() {
     runningRef.current = true
     const settings = work!.settings
     const chapters = segment(work!.novel)
-    const sig = jobSig(work!.novel, chapters.length, settings)
+    const sig = jobSig(work!.novel, bible, settings)
     // 断点续跑：仅当指纹一致（同一小说+设置）才复用上次已完成的章
     const prior = work!.convert && work!.convert.sig === sig ? work!.convert : undefined
     const units: Unit[] = prior ? [...prior.units] : []
@@ -79,9 +79,15 @@ export function Conversion() {
         language: 'zh',
         source: { chapter_count: chapters.length },
       }
-      const { screenplay } = assemble({ bible, units, meta })
+      const { screenplay, report } = assemble({ bible, units, meta })
       setYaml(screenplayToYaml(screenplay))
-      snapshot({ label: '转换完成 v1', origin: 'convert', valid: true })
+      const skipped = report.droppedChapters.length
+      if (skipped) console.warn('[convert] 跳过无有效场景的章：', report.droppedChapters)
+      snapshot({
+        label: skipped ? `转换完成 v1（${skipped} 章无内容已跳过）` : '转换完成 v1',
+        origin: 'convert',
+        valid: true,
+      })
       setConvertProgress(undefined) // 成功 → 清断点
       setStatus('done')
       setStep('editor')
@@ -122,9 +128,9 @@ export function Conversion() {
     const chs = work.bible ? segment(work.novel) : []
     const resumable =
       !!work.convert &&
-      work.convert.sig === jobSig(work.novel, chs.length, work.settings) &&
       work.convert.units.length > 0 &&
-      work.convert.units.length < chs.length
+      work.convert.units.length < chs.length &&
+      work.convert.sig === jobSig(work.novel, work.bible, work.settings)
     return (
       <ConversionSettings
         settings={work.settings}
@@ -149,9 +155,26 @@ export function Conversion() {
   )
 }
 
-/** job 指纹：小说长度 + 章数 + ②④①设置（含自由改编 brief）。变了就不复用旧断点。 */
-function jobSig(novel: string, chapterCount: number, s: WorkSettings): string {
-  return `${novel.length}:${chapterCount}:${s.lengthForm}:${s.adaptationMode}:${s.style}:${s.adaptationBrief ?? ''}`
+/** djb2 字符串哈希（够区分小说/设定内容；非加密用途）。 */
+function hashStr(s: string): string {
+  let h = 5381
+  for (let i = 0; i < s.length; i++) h = (((h << 5) + h) ^ s.charCodeAt(i)) | 0
+  return (h >>> 0).toString(36)
+}
+
+/**
+ * job 指纹：小说**内容**哈希 + 设定（bible）哈希 + ②④①设置。任一变化都不复用旧断点。
+ * 用内容哈希而非长度——避免"等长不同文/改写保持长度"误判为同一任务而续错章。
+ */
+function jobSig(novel: string, bible: Bible | undefined, s: WorkSettings): string {
+  return [
+    hashStr(novel),
+    bible ? hashStr(JSON.stringify(bible)) : '-',
+    s.lengthForm,
+    s.adaptationMode,
+    s.style,
+    s.adaptationBrief ?? '',
+  ].join(':')
 }
 
 async function post(url: string, body: unknown) {
